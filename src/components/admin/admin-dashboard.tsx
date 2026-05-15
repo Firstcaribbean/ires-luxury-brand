@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { ProductManagement } from "@/components/admin/product-management";
 import { formatNaira } from "@/lib/currency";
 import {
   getStoredAdminSession,
@@ -269,6 +270,8 @@ export function AdminDashboard() {
           <p className="mt-8 text-[color:var(--color-muted)]">No orders yet.</p>
         )}
       </section>
+
+      <ProductManagement />
     </div>
   );
 }

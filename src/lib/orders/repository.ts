@@ -9,6 +9,7 @@ import {
   limit,
   orderBy,
   query,
+  setDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -16,15 +17,21 @@ import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 import { demoSeedOrders } from "@/data/orders";
 import { siteConfig } from "@/data/site-config";
+import { getStoredCustomerSession } from "@/lib/customers/repository";
 import { getFirebaseServices } from "@/lib/firebase/client";
+import {
+  generateTrackingId,
+  normalizePhone,
+  parseOrderRecord,
+  summarizeItems,
+  upsertStatusHistory,
+} from "@/lib/orders/shared";
 import type {
   AdminSession,
   BookingInput,
   DeliveryConfirmationInput,
-  OrderItem,
   OrderRecord,
   OrderStatus,
-  OrderStatusEntry,
 } from "@/lib/orders/types";
 
 const LOCAL_ORDERS_KEY = "mdp-orders";
@@ -39,53 +46,6 @@ function cloneDemoOrders() {
     ...order,
     statusHistory: order.statusHistory.map((entry) => ({ ...entry })),
   }));
-}
-
-function normalizePhone(phone: string) {
-  return phone.replace(/\D/g, "");
-}
-
-function generateTrackingId() {
-  const base = String(Date.now()).slice(-6);
-  return `MDP-${base}`;
-}
-
-function summarizeItems(items: OrderItem[]) {
-  if (!items.length) {
-    return "Perfume order";
-  }
-
-  if (items.length === 1) {
-    return items[0].productName;
-  }
-
-  return `${items[0].productName} + ${items.length - 1} more`;
-}
-
-function parseOrderRecord(raw: Record<string, unknown>, id: string): OrderRecord {
-  const statusHistory = Array.isArray(raw.statusHistory)
-    ? (raw.statusHistory as OrderStatusEntry[])
-    : [];
-  const items = Array.isArray(raw.items) ? (raw.items as OrderItem[]) : [];
-
-  return {
-    id,
-    trackingId: String(raw.trackingId ?? id),
-    customerName: String(raw.customerName ?? ""),
-    phone: String(raw.phone ?? ""),
-    normalizedPhone: String(raw.normalizedPhone ?? ""),
-    address: String(raw.address ?? ""),
-    productName: String(raw.productName ?? summarizeItems(items)),
-    quantity: Number(raw.quantity ?? 1),
-    totalAmount: Number(raw.totalAmount ?? 0),
-    items,
-    status: raw.status as OrderStatus,
-    statusHistory,
-    deliveryNote: String(raw.deliveryNote ?? ""),
-    orderReceivedConfirmed: Boolean(raw.orderReceivedConfirmed),
-    createdAt: String(raw.createdAt ?? new Date().toISOString()),
-    updatedAt: String(raw.updatedAt ?? new Date().toISOString()),
-  };
 }
 
 function readLocalOrders() {
@@ -119,20 +79,6 @@ function writeLocalOrders(orders: OrderRecord[]) {
   window.localStorage.setItem(LOCAL_ORDERS_KEY, JSON.stringify(orders));
 }
 
-function upsertStatusHistory(
-  statusHistory: OrderStatusEntry[],
-  status: OrderStatus,
-  updatedAt: string,
-) {
-  const lastEntry = statusHistory.at(-1);
-
-  if (lastEntry?.status === status) {
-    return statusHistory;
-  }
-
-  return [...statusHistory, { status, updatedAt }];
-}
-
 export async function createOrder(input: BookingInput) {
   const createdAt = new Date().toISOString();
   const trackingId = generateTrackingId();
@@ -141,10 +87,13 @@ export async function createOrder(input: BookingInput) {
     0,
   );
   const quantity = input.items.reduce((sum, item) => sum + item.quantity, 0);
+  const session = getStoredCustomerSession();
   const order: OrderRecord = {
     id: trackingId,
     trackingId,
     customerName: input.customerName.trim(),
+    customerEmail: input.customerEmail?.trim() || session?.email || "",
+    customerUid: input.customerUid?.trim() || session?.uid || "",
     phone: input.phone.trim(),
     normalizedPhone: normalizePhone(input.phone),
     address: input.address.trim(),
@@ -371,11 +320,56 @@ function setStoredAdminSession(session: AdminSession | null) {
   window.localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(session));
 }
 
+async function ensureAdminAccount(email: string, uid: string) {
+  const firebase = getFirebaseServices();
+
+  if (!firebase) {
+    return;
+  }
+
+  const snapshot = await getDocs(query(collection(firebase.db, "admins"), limit(1)));
+
+  if (snapshot.empty) {
+    await setDoc(doc(firebase.db, "admins", uid), {
+      email,
+      uid,
+      createdAt: new Date().toISOString(),
+    });
+    return;
+  }
+
+  const existing = await getDoc(doc(firebase.db, "admins", uid));
+
+  if (existing.exists()) {
+    return;
+  }
+
+  const emailMatch = await getDocs(
+    query(collection(firebase.db, "admins"), where("email", "==", email), limit(1)),
+  );
+
+  if (emailMatch.empty) {
+    throw new Error(
+      "This account is not approved for vendor access. Sign in with the vendor admin account.",
+    );
+  }
+}
+
 export async function signInAdmin(email: string, password: string) {
   const firebase = getFirebaseServices();
 
   if (firebase) {
-    await signInWithEmailAndPassword(firebase.auth, email, password);
+    const credentials = await signInWithEmailAndPassword(
+      firebase.auth,
+      email,
+      password,
+    );
+    try {
+      await ensureAdminAccount(email, credentials.user.uid);
+    } catch (error) {
+      await signOut(firebase.auth);
+      throw error;
+    }
     const session: AdminSession = {
       email,
       mode: "firebase",

@@ -8,6 +8,7 @@ export type Perfume = {
   fragranceFamily: string;
   price: number;
   size: string;
+  imageUrl: string;
   topNotes: string[];
   heartNotes: string[];
   baseNotes: string[];
@@ -15,7 +16,7 @@ export type Perfume = {
   heroAccent: string;
 };
 
-export const perfumes: Perfume[] = [
+export const demoSeedPerfumes: Perfume[] = [
   {
     id: "p-001",
     slug: "nocturne-gold",
@@ -28,6 +29,8 @@ export const perfumes: Perfume[] = [
     fragranceFamily: "Amber Floral",
     price: 185000,
     size: "100ml Extrait",
+    imageUrl:
+      "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=900&q=80",
     topNotes: ["Saffron", "Pink pepper", "Bergamot"],
     heartNotes: ["Turkish rose", "Jasmine sambac", "Orris"],
     baseNotes: ["Amber resin", "Suede", "Vanilla bean"],
@@ -46,6 +49,8 @@ export const perfumes: Perfume[] = [
     fragranceFamily: "White Floral Musk",
     price: 165000,
     size: "75ml Eau de Parfum",
+    imageUrl:
+      "https://images.unsplash.com/photo-1595425964072-9a9f46d08f4f?auto=format&fit=crop&w=900&q=80",
     topNotes: ["Neroli", "Pear blossom", "Mandarin"],
     heartNotes: ["Tuberose", "Orange flower", "Magnolia"],
     baseNotes: ["Cashmere musk", "White sandalwood", "Benzoin"],
@@ -64,6 +69,8 @@ export const perfumes: Perfume[] = [
     fragranceFamily: "Woody Spiced",
     price: 210000,
     size: "100ml Parfum Intense",
+    imageUrl:
+      "https://images.unsplash.com/photo-1615634262417-7b49f2b36313?auto=format&fit=crop&w=900&q=80",
     topNotes: ["Cardamom", "Black tea", "Clove bud"],
     heartNotes: ["Incense", "Cacao husk", "Labdanum"],
     baseNotes: ["Atlas cedar", "Patchouli", "Tonka"],
@@ -82,6 +89,8 @@ export const perfumes: Perfume[] = [
     fragranceFamily: "Oud Amber",
     price: 240000,
     size: "100ml Extrait",
+    imageUrl:
+      "https://images.unsplash.com/photo-1588405748880-12d1d2a59c75?auto=format&fit=crop&w=900&q=80",
     topNotes: ["Plum nectar", "Elemi", "Cracked coriander"],
     heartNotes: ["Oud accord", "Iris smoke", "Violet leaf"],
     baseNotes: ["Mineral amber", "Guaiac wood", "Musk"],
@@ -90,6 +99,4 @@ export const perfumes: Perfume[] = [
   },
 ];
 
-export function getPerfumeBySlug(slug: string) {
-  return perfumes.find((perfume) => perfume.slug === slug);
-}
+export const perfumes = demoSeedPerfumes;

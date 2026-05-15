@@ -18,15 +18,24 @@ export function PerfumeCard({ perfume }: PerfumeCardProps) {
         }}
       />
       <div className="relative flex min-h-[15rem] flex-col justify-between gap-6">
-        <div className="space-y-4">
-          <p className="section-kicker">{perfume.fragranceFamily}</p>
-          <div>
-            <h3 className="font-serif text-2xl text-[color:var(--color-ink)]">{perfume.name}</h3>
-            <p className="mt-2 text-sm uppercase tracking-[0.18em] text-[color:var(--color-muted-soft)]">
-              {perfume.size}
-            </p>
+        <div className="grid gap-5 sm:grid-cols-[8rem_1fr] sm:items-start">
+          <div className="overflow-hidden rounded-[1.35rem] bg-[color:var(--color-panel)]">
+            <img
+              src={perfume.imageUrl}
+              alt={perfume.name}
+              className="h-36 w-full object-cover sm:h-40"
+            />
           </div>
-          <p className="max-w-sm leading-7 text-[color:var(--color-muted)]">{perfume.description}</p>
+          <div className="space-y-4">
+            <p className="section-kicker">{perfume.fragranceFamily}</p>
+            <div>
+              <h3 className="font-serif text-2xl text-[color:var(--color-ink)]">{perfume.name}</h3>
+              <p className="mt-2 text-sm uppercase tracking-[0.18em] text-[color:var(--color-muted-soft)]">
+                {perfume.size}
+              </p>
+            </div>
+            <p className="max-w-sm leading-7 text-[color:var(--color-muted)]">{perfume.description}</p>
+          </div>
         </div>
 
         <div className="flex flex-wrap items-end justify-between gap-4">

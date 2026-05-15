@@ -1,15 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { siteConfig } from "@/data/site-config";
-import { isFirebaseConfigured } from "@/lib/firebase/config";
-import { signInAdmin } from "@/lib/orders/repository";
+import { registerCustomer } from "@/lib/customers/repository";
 
-export function AdminLoginForm() {
+export function CustomerRegisterForm() {
   const router = useRouter();
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,31 +22,57 @@ export function AdminLoginForm() {
     setIsSubmitting(true);
 
     try {
-      await signInAdmin(email, password);
-      router.push("/admin/dashboard");
+      await registerCustomer({
+        fullName,
+        email,
+        phone,
+        address,
+        password,
+      });
+      router.push("/account");
     } catch (submissionError) {
       setError(
         submissionError instanceof Error
           ? submissionError.message
-          : "Sign in failed. Please try again.",
+          : "Account creation failed.",
       );
     } finally {
       setIsSubmitting(false);
     }
   }
 
-  const demoMode = !isFirebaseConfigured();
-
   return (
     <div className="space-y-6">
       <form className="space-y-4" onSubmit={handleSubmit}>
         <input
           required
+          value={fullName}
+          onChange={(event) => setFullName(event.target.value)}
+          placeholder="Full name"
+          className="input-shell"
+        />
+        <input
+          required
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          placeholder="Admin email"
+          placeholder="Email address"
           className="input-shell"
+        />
+        <input
+          required
+          value={phone}
+          onChange={(event) => setPhone(event.target.value)}
+          placeholder="Phone number"
+          className="input-shell"
+        />
+        <textarea
+          required
+          rows={4}
+          value={address}
+          onChange={(event) => setAddress(event.target.value)}
+          placeholder="Default delivery address"
+          className="input-shell resize-none"
         />
         <input
           required
@@ -59,7 +87,7 @@ export function AdminLoginForm() {
           disabled={isSubmitting}
           className="button-gold disabled:cursor-not-allowed disabled:opacity-70"
         >
-          {isSubmitting ? "Signing in..." : "Sign in"}
+          {isSubmitting ? "Creating account..." : "Create account"}
         </button>
       </form>
 
@@ -69,24 +97,12 @@ export function AdminLoginForm() {
         </div>
       ) : null}
 
-      <div className="rounded-[1.5rem] border border-[color:var(--color-accent-soft)]/16 bg-[color:var(--color-panel)] p-5 text-sm leading-7 text-[color:var(--color-muted)]">
-        {demoMode ? (
-          <>
-            Demo mode is active until Firebase keys are added. Use
-            {" "}
-            <span className="font-medium text-[color:var(--color-accent-strong)]">
-              {siteConfig.demoAdminEmail}
-            </span>
-            {" / "}
-            <span className="font-medium text-[color:var(--color-accent-strong)]">
-              MaisonDemo123!
-            </span>
-            .
-          </>
-        ) : (
-          "Firebase mode is active. Sign in with the vendor account you created in Firebase Authentication. The first approved vendor login becomes the admin profile for this store."
-        )}
-      </div>
+      <p className="text-sm leading-7 text-[color:var(--color-muted)]">
+        Already have an account?{" "}
+        <Link href="/account/login" className="font-medium text-[color:var(--color-accent-strong)]">
+          Sign in here
+        </Link>
+      </p>
     </div>
   );
 }

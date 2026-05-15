@@ -25,6 +25,8 @@ export type OrderRecord = {
   id: string;
   trackingId: string;
   customerName: string;
+  customerEmail?: string;
+  customerUid?: string;
   phone: string;
   normalizedPhone: string;
   address: string;
@@ -42,6 +44,8 @@ export type OrderRecord = {
 
 export type BookingInput = {
   customerName: string;
+  customerEmail?: string;
+  customerUid?: string;
   phone: string;
   address: string;
   items: OrderItem[];

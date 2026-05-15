@@ -1,13 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { siteConfig } from "@/data/site-config";
-import { isFirebaseConfigured } from "@/lib/firebase/config";
-import { signInAdmin } from "@/lib/orders/repository";
+import { signInCustomer } from "@/lib/customers/repository";
 
-export function AdminLoginForm() {
+export function CustomerLoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,20 +19,18 @@ export function AdminLoginForm() {
     setIsSubmitting(true);
 
     try {
-      await signInAdmin(email, password);
-      router.push("/admin/dashboard");
+      await signInCustomer(email, password);
+      router.push("/account");
     } catch (submissionError) {
       setError(
         submissionError instanceof Error
           ? submissionError.message
-          : "Sign in failed. Please try again.",
+          : "Sign in failed.",
       );
     } finally {
       setIsSubmitting(false);
     }
   }
-
-  const demoMode = !isFirebaseConfigured();
 
   return (
     <div className="space-y-6">
@@ -43,7 +40,7 @@ export function AdminLoginForm() {
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          placeholder="Admin email"
+          placeholder="Email address"
           className="input-shell"
         />
         <input
@@ -69,24 +66,12 @@ export function AdminLoginForm() {
         </div>
       ) : null}
 
-      <div className="rounded-[1.5rem] border border-[color:var(--color-accent-soft)]/16 bg-[color:var(--color-panel)] p-5 text-sm leading-7 text-[color:var(--color-muted)]">
-        {demoMode ? (
-          <>
-            Demo mode is active until Firebase keys are added. Use
-            {" "}
-            <span className="font-medium text-[color:var(--color-accent-strong)]">
-              {siteConfig.demoAdminEmail}
-            </span>
-            {" / "}
-            <span className="font-medium text-[color:var(--color-accent-strong)]">
-              MaisonDemo123!
-            </span>
-            .
-          </>
-        ) : (
-          "Firebase mode is active. Sign in with the vendor account you created in Firebase Authentication. The first approved vendor login becomes the admin profile for this store."
-        )}
-      </div>
+      <p className="text-sm leading-7 text-[color:var(--color-muted)]">
+        New customer?{" "}
+        <Link href="/account/register" className="font-medium text-[color:var(--color-accent-strong)]">
+          Create an account
+        </Link>
+      </p>
     </div>
   );
 }

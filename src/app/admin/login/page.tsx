@@ -34,9 +34,9 @@ export default function AdminLoginPage() {
             <h2 className="mt-4 font-serif text-3xl text-[color:var(--color-ink)] sm:text-4xl">
               What the vendor panel will manage
             </h2>
-            <p className="mt-4 leading-7 text-[color:var(--color-muted)]">
-              Orders, tracking IDs, dispatch updates, and customer delivery
-              notes all live in one workspace for the vendor.
+          <p className="mt-4 leading-7 text-[color:var(--color-muted)]">
+              Orders, tracking IDs, customer delivery notes, product editing,
+              and logo updates all live in one workspace for the vendor.
             </p>
           </div>
 
@@ -59,8 +59,8 @@ export default function AdminLoginPage() {
           <div className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-8 shadow-sm">
             <p className="leading-7 text-[color:var(--color-muted)]">
               Once signed in, the vendor can review orders saved from the cart,
-              send customers to WhatsApp payment, and update tracking from one
-              place.
+              manage the perfume catalogue, update the brand logo, and keep the
+              customer experience current from one place.
             </p>
           </div>
         </section>

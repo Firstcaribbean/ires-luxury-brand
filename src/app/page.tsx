@@ -2,10 +2,9 @@ import Link from "next/link";
 
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
-import { PerfumeCard } from "@/components/products/perfume-card";
+import { ProductsGrid } from "@/components/products/products-grid";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { perfumes } from "@/data/perfumes";
 import { siteConfig } from "@/data/site-config";
 
 const scrollScenes = [
@@ -194,12 +193,10 @@ export default function Home() {
             <SectionHeading
               eyebrow="Signature Collection"
               title="Shop the perfumes, add favorites, and continue when ready."
-              body="Every product card now supports the cart flow so customers can browse multiple scents before they book and pay."
+              body="Every product card now supports the cart flow so customers can browse multiple scents before they book and pay, while the admin can manage products from the vendor panel."
             />
-            <div className="mt-12 grid gap-6 lg:grid-cols-2">
-              {perfumes.map((perfume) => (
-                <PerfumeCard key={perfume.id} perfume={perfume} />
-              ))}
+            <div className="mt-12">
+              <ProductsGrid />
             </div>
           </div>
         </section>

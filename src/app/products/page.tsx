@@ -1,8 +1,7 @@
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
-import { PerfumeCard } from "@/components/products/perfume-card";
+import { ProductsGrid } from "@/components/products/products-grid";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { perfumes } from "@/data/perfumes";
 
 export default function ProductsPage() {
   return (
@@ -15,10 +14,8 @@ export default function ProductsPage() {
           body="Customers can add items to cart first, then save the order on the site before moving to WhatsApp for payment."
         />
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-2">
-          {perfumes.map((perfume) => (
-            <PerfumeCard key={perfume.id} perfume={perfume} />
-          ))}
+        <div className="mt-12">
+          <ProductsGrid />
         </div>
       </main>
       <SiteFooter />

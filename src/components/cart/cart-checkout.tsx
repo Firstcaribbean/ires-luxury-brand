@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
-import { siteConfig } from "@/data/site-config";
+import { getBrandSettings, getDefaultBrandSettings, type BrandSettings } from "@/lib/brand/repository";
 import { clearCart, onCartUpdated, readCart, removeFromCart, updateCartQuantity } from "@/lib/cart/repository";
 import type { CartItem } from "@/lib/cart/types";
 import { formatNaira } from "@/lib/currency";
+import { getStoredCustomerSession } from "@/lib/customers/repository";
 import { createOrder } from "@/lib/orders/repository";
 
 type SavedOrderState = {
@@ -22,11 +23,30 @@ export function CartCheckout() {
   const [savedOrder, setSavedOrder] = useState<SavedOrderState | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [brandSettings, setBrandSettings] = useState<BrandSettings>(
+    getDefaultBrandSettings(),
+  );
 
   useEffect(() => {
     const refresh = () => setCartItems(readCart());
     refresh();
     return onCartUpdated(refresh);
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const session = getStoredCustomerSession();
+
+      if (session) {
+        setCustomerName(session.fullName);
+        setPhone(session.phone);
+        setAddress(session.address);
+      }
+    }, 0);
+
+    void getBrandSettings().then(setBrandSettings);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   const totalItems = useMemo(
@@ -51,6 +71,8 @@ export function CartCheckout() {
     try {
       const order = await createOrder({
         customerName,
+        customerEmail: getStoredCustomerSession()?.email,
+        customerUid: getStoredCustomerSession()?.uid,
         phone,
         address,
         items: cartItems.map((item) => ({
@@ -70,7 +92,7 @@ export function CartCheckout() {
       );
 
       const message = [
-        `Hello ${siteConfig.brandName}, I want to complete my order.`,
+        `Hello ${brandSettings.brandName}, I want to complete my order.`,
         `Name: ${customerName}`,
         `Phone: ${phone}`,
         `Delivery Address: ${address}`,
@@ -83,7 +105,7 @@ export function CartCheckout() {
 
       setSavedOrder({
         trackingId: order.trackingId,
-        whatsappLink: `https://wa.me/${siteConfig.vendorWhatsappNumber}?text=${encodeURIComponent(message)}`,
+        whatsappLink: `https://wa.me/${brandSettings.vendorWhatsappNumber}?text=${encodeURIComponent(message)}`,
       });
       clearCart();
     } catch (submissionError) {
@@ -205,6 +227,15 @@ export function CartCheckout() {
           Save the order on the website first. After that, click the WhatsApp
           button to message the vendor and complete payment.
         </p>
+        <p className="mt-2 text-sm text-[color:var(--color-muted-soft)]">
+          Signed-in customers will see their details filled automatically.
+        </p>
+        {!getStoredCustomerSession() ? (
+          <p className="mt-2 text-sm text-[color:var(--color-muted)]">
+            Want faster checkout next time? Create a customer account from the
+            account page before booking.
+          </p>
+        ) : null}
 
         <div className="mt-6 rounded-[1.25rem] bg-[color:var(--color-panel)] p-4">
           <p className="text-sm text-[color:var(--color-muted)]">Total amount</p>
