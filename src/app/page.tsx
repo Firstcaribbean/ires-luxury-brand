@@ -10,39 +10,39 @@ import { siteConfig } from "@/data/site-config";
 
 const scrollScenes = [
   {
-    title: "Discover the signature",
-    body: "A cinematic introduction designed to feel like a perfume campaign instead of a standard storefront.",
+    title: "Discover the collection",
+    body: "A softer, lighter storefront that still feels polished and premium from the first scroll.",
   },
   {
-    title: "Book with intention",
-    body: "Every product detail page moves customers straight into a guided WhatsApp booking flow.",
+    title: "Add to cart with ease",
+    body: "Customers can add perfumes as they browse, then move to one clear booking step when ready.",
   },
   {
-    title: "Track every delivery",
-    body: "The customer journey continues after purchase with order tracking and delivery confirmation.",
+    title: "Save and pay on WhatsApp",
+    body: "The order is saved on the website first, then WhatsApp opens so the vendor can confirm payment.",
   },
 ];
 
 const fragranceLayers = [
   {
     label: "Top Notes",
-    copy: "A bright first impression built with citrus, pepper, and crisp aromatic lift.",
+    copy: "A bright opening built with citrus, fruits, herbs, and airy first impressions.",
   },
   {
     label: "Heart Notes",
-    copy: "The emotional center where florals, incense, and texture give the fragrance identity.",
+    copy: "The personality of the perfume where florals, spice, and texture start to bloom.",
   },
   {
     label: "Base Notes",
-    copy: "A long luxurious finish of woods, amber, resin, and skin-like warmth.",
+    copy: "The lasting finish of woods, musk, amber, vanilla, and soft sensual warmth.",
   },
 ];
 
 const orderFlow = [
-  "Select your perfume and reserve it with a Book Now request.",
-  "Share customer details, quantity, and address in a pre-filled WhatsApp message.",
-  "Vendor confirms payment, dispatches the order, and updates tracking progress.",
-  "Customer receives the order and uploads photo proof on delivery confirmation.",
+  "Browse the collection and add one or more perfumes to cart.",
+  "Open the cart, enter delivery details, and save the booking on the website.",
+  "Use the WhatsApp button to message the vendor and complete payment.",
+  "Track the order status later and confirm delivery with a note once it arrives.",
 ];
 
 export default function Home() {
@@ -50,21 +50,21 @@ export default function Home() {
     <>
       <SiteHeader />
       <main className="overflow-hidden">
-        <section className="relative isolate border-b border-white/10">
+        <section className="relative isolate border-b border-[color:var(--color-accent-soft)]/14">
           <div className="noise-overlay" />
-          <div className="mx-auto grid min-h-[calc(100vh-81px)] w-full max-w-7xl gap-16 px-6 py-16 lg:grid-cols-[1fr_0.9fr] lg:px-10 lg:py-24">
+          <div className="mx-auto grid min-h-[calc(100vh-81px)] w-full max-w-7xl gap-14 px-6 py-14 lg:grid-cols-[1fr_0.9fr] lg:px-10 lg:py-20">
             <div className="flex flex-col justify-center gap-8">
               <div className="space-y-5">
                 <BrandLogo hero />
-                <p className="section-kicker">Luxury Perfume Commerce</p>
-                <h1 className="max-w-3xl font-serif text-5xl leading-none text-white sm:text-6xl lg:text-7xl">
-                  A bold perfume experience with cinematic scroll, signature
-                  style, and concierge ordering.
+                <p className="section-kicker">Luxury Perfume Shopping</p>
+                <h1 className="max-w-3xl font-serif text-4xl leading-tight text-[color:var(--color-ink)] sm:text-5xl lg:text-6xl">
+                  A refined perfume store with soft cinematic styling and a
+                  clear cart-to-WhatsApp order flow.
                 </h1>
-                <p className="max-w-2xl text-lg leading-8 text-white/65">
-                  {siteConfig.brandName} blends editorial design, layered motion, and
-                  a concierge WhatsApp checkout flow into one premium digital
-                  experience.
+                <p className="max-w-2xl text-base leading-8 text-[color:var(--color-muted)] sm:text-lg">
+                  {siteConfig.brandName} now combines a lighter luxury look,
+                  add-to-cart shopping, saved bookings, and direct vendor
+                  payment on WhatsApp in one easy customer journey.
                 </p>
               </div>
 
@@ -72,8 +72,8 @@ export default function Home() {
                 <Link href="/products" className="button-gold">
                   Explore the collection
                 </Link>
-                <Link href="/track" className="button-ghost">
-                  Track an order
+                <Link href="/cart" className="button-ghost">
+                  View cart and book
                 </Link>
               </div>
 
@@ -81,15 +81,17 @@ export default function Home() {
                 {scrollScenes.map((scene, index) => (
                   <div
                     key={scene.title}
-                    className="rounded-[1.75rem] border border-white/10 bg-[color:var(--color-panel)] p-5"
+                    className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-5 shadow-sm"
                   >
-                    <p className="text-xs uppercase tracking-[0.35em] text-white/35">
+                    <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--color-muted-soft)]">
                       0{index + 1}
                     </p>
-                    <h2 className="mt-4 font-serif text-2xl text-white">
+                    <h2 className="mt-4 font-serif text-xl text-[color:var(--color-ink)] sm:text-2xl">
                       {scene.title}
                     </h2>
-                    <p className="mt-3 leading-7 text-white/60">{scene.body}</p>
+                    <p className="mt-3 leading-7 text-[color:var(--color-muted)]">
+                      {scene.body}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -103,14 +105,14 @@ export default function Home() {
                 <div className="hero-bottle-glass">
                   <div className="hero-bottle-reflection" />
                   <div className="hero-bottle-label">
-                    <span className="text-[0.65rem] uppercase tracking-[0.45em] text-white/45">
+                    <span className="text-[0.62rem] uppercase tracking-[0.42em] text-[color:var(--color-muted-soft)]">
                       IRE&apos;S LUXURY
                     </span>
-                    <span className="mt-3 font-serif text-4xl text-white">
+                    <span className="mt-3 font-serif text-3xl text-[color:var(--color-ink)] sm:text-4xl">
                       Pink Signature
                     </span>
-                    <span className="mt-3 h-px w-10 bg-[color:var(--color-gold-soft)]" />
-                    <span className="mt-3 text-sm uppercase tracking-[0.35em] text-[color:var(--color-gold-soft)]">
+                    <span className="mt-3 h-px w-10 bg-[color:var(--color-accent-soft)]" />
+                    <span className="mt-3 text-xs uppercase tracking-[0.32em] text-[color:var(--color-accent-strong)]">
                       Eau de parfum
                     </span>
                   </div>
@@ -120,37 +122,37 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="border-b border-white/10">
-          <div className="mx-auto grid w-full max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[0.8fr_1.2fr] lg:px-10">
+        <section className="border-b border-[color:var(--color-accent-soft)]/14">
+          <div className="mx-auto grid w-full max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[0.84fr_1.16fr] lg:px-10">
             <div className="lg:sticky lg:top-28 lg:self-start">
               <SectionHeading
                 eyebrow="Brand Story"
-                title="Designed like a luxury campaign, not a commodity catalog."
-                body="The homepage is structured as a scroll narrative: mood, bottle, ingredients, collection, and service. That gives your perfume brand a stronger identity before the customer even reaches the booking step."
+                title="A lighter boutique direction that still feels premium."
+                body="The app now leans into soft pink, white, and editorial spacing so the experience feels welcoming, feminine, and easier to read without losing the luxury mood."
               />
             </div>
             <div className="grid gap-6">
-              <div className="rounded-[2rem] border border-white/10 bg-[color:var(--color-panel)] p-8">
+              <div className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-8 shadow-sm">
                 <p className="section-kicker">Editorial Layout</p>
-                <p className="mt-4 max-w-2xl text-2xl leading-10 text-white/80">
-                  Dramatic spacing, restrained motion, and layered light effects
-                  create the premium feeling that commodity templates usually
-                  miss.
+                <p className="mt-4 max-w-2xl text-xl leading-9 text-[color:var(--color-ink)] sm:text-2xl">
+                  Clean spacing, readable typography, and soft glass-like panels
+                  keep the store premium while making the shopping flow much
+                  easier to follow.
                 </p>
               </div>
               <div className="grid gap-6 md:grid-cols-2">
-                <div className="rounded-[2rem] border border-white/10 bg-black/25 p-6">
-                  <p className="section-kicker">Luxury UI</p>
-                  <p className="mt-4 leading-7 text-white/65">
-                    Black, ivory, and branded pink are supported by elegant
-                    typography and subtle glass textures.
+                <div className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/14 bg-[color:var(--color-panel)] p-6 shadow-sm">
+                  <p className="section-kicker">Shopping Flow</p>
+                  <p className="mt-4 leading-7 text-[color:var(--color-muted)]">
+                    Instead of booking one product at a time, customers can now
+                    collect their choices first, then save one order at checkout.
                   </p>
                 </div>
-                <div className="rounded-[2rem] border border-white/10 bg-black/25 p-6">
-                  <p className="section-kicker">Mobile First</p>
-                  <p className="mt-4 leading-7 text-white/65">
-                    The structure is responsive from the beginning so the
-                    premium mood still holds up on smaller screens.
+                <div className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/14 bg-[color:var(--color-panel)] p-6 shadow-sm">
+                  <p className="section-kicker">Readable Design</p>
+                  <p className="mt-4 leading-7 text-[color:var(--color-muted)]">
+                    The font sizes are calmer at normal zoom and still scale
+                    naturally when the browser is enlarged.
                   </p>
                 </div>
               </div>
@@ -158,39 +160,41 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="border-b border-white/10">
+        <section className="border-b border-[color:var(--color-accent-soft)]/14">
           <div className="mx-auto w-full max-w-7xl px-6 py-20 lg:px-10">
             <SectionHeading
               eyebrow="Fragrance Architecture"
-              title="Each scent unfolds in layers, just like the site experience."
-              body="These note blocks preview how we can tell the product story with motion and structure before customers book."
+              title="Each scent still tells a story in clear, elegant layers."
+              body="The homepage keeps the product-storytelling idea, but with softer contrast and easier reading across desktop and mobile."
               align="center"
             />
             <div className="mt-12 grid gap-6 md:grid-cols-3">
               {fragranceLayers.map((layer, index) => (
                 <article
                   key={layer.label}
-                  className="rounded-[2rem] border border-white/10 bg-[color:var(--color-panel-strong)] p-6"
+                  className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-6 shadow-sm"
                 >
-                  <p className="text-xs uppercase tracking-[0.35em] text-white/35">
+                  <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--color-muted-soft)]">
                     Layer 0{index + 1}
                   </p>
-                  <h3 className="mt-4 font-serif text-3xl text-white">
+                  <h3 className="mt-4 font-serif text-2xl text-[color:var(--color-ink)] sm:text-3xl">
                     {layer.label}
                   </h3>
-                  <p className="mt-4 leading-7 text-white/65">{layer.copy}</p>
+                  <p className="mt-4 leading-7 text-[color:var(--color-muted)]">
+                    {layer.copy}
+                  </p>
                 </article>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="border-b border-white/10">
+        <section className="border-b border-[color:var(--color-accent-soft)]/14">
           <div className="mx-auto w-full max-w-7xl px-6 py-20 lg:px-10">
             <SectionHeading
               eyebrow="Signature Collection"
-              title="A first look at the perfumes in your luxury catalogue."
-              body="These are seeded as structured content so we can reuse them across the homepage, collection page, detail pages, and later the admin panel."
+              title="Shop the perfumes, add favorites, and continue when ready."
+              body="Every product card now supports the cart flow so customers can browse multiple scents before they book and pay."
             />
             <div className="mt-12 grid gap-6 lg:grid-cols-2">
               {perfumes.map((perfume) => (
@@ -200,24 +204,26 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="border-b border-white/10">
+        <section className="border-b border-[color:var(--color-accent-soft)]/14">
           <div className="mx-auto w-full max-w-7xl px-6 py-20 lg:px-10">
             <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr]">
               <SectionHeading
                 eyebrow="Service Journey"
-                title="The order flow stays elegant from booking to proof of delivery."
-                body="This structure gives you a functional business flow without forcing customers through a complicated checkout system."
+                title="The business flow is now simpler and more practical."
+                body="Customers can shop first, save later, and only move to WhatsApp once the full order is already recorded on the website."
               />
               <div className="space-y-4">
                 {orderFlow.map((step, index) => (
                   <div
                     key={step}
-                    className="rounded-[1.75rem] border border-white/10 bg-[color:var(--color-panel)] p-5"
+                    className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-5 shadow-sm"
                   >
-                    <p className="text-xs uppercase tracking-[0.35em] text-white/35">
+                    <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--color-muted-soft)]">
                       Step 0{index + 1}
                     </p>
-                    <p className="mt-3 leading-7 text-white/70">{step}</p>
+                    <p className="mt-3 leading-7 text-[color:var(--color-muted)]">
+                      {step}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -226,18 +232,15 @@ export default function Home() {
         </section>
 
         <section className="mx-auto w-full max-w-7xl px-6 py-20 lg:px-10">
-          <div
-            className="rounded-[2.25rem] border bg-[linear-gradient(135deg,rgba(28,21,13,0.96),rgba(8,8,10,0.96))] p-8 sm:p-10"
-            style={{ borderColor: "rgba(255, 41, 142, 0.35)" }}
-          >
-            <p className="section-kicker">Project Foundation Ready</p>
-            <h2 className="mt-4 max-w-3xl font-serif text-4xl leading-tight text-white sm:text-5xl">
-              The front-end luxury direction is in place. Next we connect
-              booking, tracking, storage, and admin data with Firebase.
+          <div className="rounded-[2.25rem] border border-[color:var(--color-accent-soft)]/18 bg-[linear-gradient(135deg,#fff8fb,#fff0f7)] p-8 shadow-sm sm:p-10">
+            <p className="section-kicker">Ready To Use</p>
+            <h2 className="mt-4 max-w-3xl font-serif text-3xl leading-tight text-[color:var(--color-ink)] sm:text-4xl">
+              The store now supports lighter branding, naira pricing, cart
+              selection, saved bookings, tracking, and vendor follow-up.
             </h2>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link href="/products" className="button-gold">
-                View product pages
+                Start shopping
               </Link>
               <Link href="/admin/login" className="button-ghost">
                 Preview vendor panel

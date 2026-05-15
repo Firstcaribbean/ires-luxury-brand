@@ -57,28 +57,28 @@ export function AdminLoginForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex rounded-full bg-[color:var(--color-gold-soft)] px-6 py-3 text-sm font-medium uppercase tracking-[0.25em] text-black disabled:cursor-not-allowed disabled:opacity-70"
+          className="button-gold disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isSubmitting ? "Signing in..." : "Sign in"}
         </button>
       </form>
 
       {error ? (
-        <div className="rounded-[1.5rem] border border-amber-200/20 bg-amber-100/10 p-4 text-sm leading-6 text-amber-100">
+        <div className="rounded-[1.5rem] border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-700">
           {error}
         </div>
       ) : null}
 
-      <div className="rounded-[1.5rem] border border-white/10 bg-black/20 p-5 text-sm leading-7 text-white/60">
+      <div className="rounded-[1.5rem] border border-[color:var(--color-accent-soft)]/16 bg-[color:var(--color-panel)] p-5 text-sm leading-7 text-[color:var(--color-muted)]">
         {demoMode ? (
           <>
             Demo mode is active until Firebase keys are added. Use
             {" "}
-            <span className="text-[color:var(--color-gold-soft)]">
+            <span className="font-medium text-[color:var(--color-accent-strong)]">
               {siteConfig.demoAdminEmail}
             </span>
             {" / "}
-            <span className="text-[color:var(--color-gold-soft)]">
+            <span className="font-medium text-[color:var(--color-accent-strong)]">
               MaisonDemo123!
             </span>
             .

@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { BookingForm } from "@/components/booking/booking-form";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { getPerfumeBySlug, perfumes } from "@/data/perfumes";
+import { formatNaira } from "@/lib/currency";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -30,7 +31,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <main className="mx-auto w-full max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <section className="space-y-8">
-            <div className="relative overflow-hidden rounded-[2.4rem] border border-white/10 bg-[color:var(--color-panel)] p-8 sm:p-10">
+            <div className="relative overflow-hidden rounded-[2rem] border border-[color:var(--color-accent-soft)]/15 bg-white p-8 shadow-sm sm:p-10">
               <div
                 className="pointer-events-none absolute inset-x-12 top-6 h-40 rounded-full blur-3xl"
                 style={{
@@ -39,57 +40,57 @@ export default async function ProductPage({ params }: ProductPageProps) {
               />
               <div className="relative space-y-5">
                 <p className="section-kicker">{perfume.fragranceFamily}</p>
-                <h1 className="max-w-2xl font-serif text-5xl text-white sm:text-6xl">
+                <h1 className="max-w-2xl font-serif text-4xl text-[color:var(--color-ink)] sm:text-5xl">
                   {perfume.name}
                 </h1>
-                <p className="max-w-2xl text-lg leading-8 text-white/65">
+                <p className="max-w-2xl text-base leading-7 text-[color:var(--color-muted)]">
                   {perfume.story}
                 </p>
                 <div className="flex flex-wrap items-center gap-5 pt-4">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.28em] text-white/35">
+                    <p className="text-xs uppercase tracking-[0.18em] text-[color:var(--color-muted-soft)]">
                       Format
                     </p>
-                    <p className="mt-2 text-white/75">{perfume.size}</p>
+                    <p className="mt-2 text-[color:var(--color-muted)]">{perfume.size}</p>
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-[0.28em] text-white/35">
+                    <p className="text-xs uppercase tracking-[0.18em] text-[color:var(--color-muted-soft)]">
                       Price
                     </p>
-                    <p className="mt-2 font-serif text-3xl text-[color:var(--color-gold-soft)]">
-                      {perfume.price}
+                    <p className="mt-2 font-serif text-2xl text-[color:var(--color-accent-strong)]">
+                      {formatNaira(perfume.price)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-[0.28em] text-white/35">
+                    <p className="text-xs uppercase tracking-[0.18em] text-[color:var(--color-muted-soft)]">
                       Mood
                     </p>
-                    <p className="mt-2 text-white/75">{perfume.mood}</p>
+                    <p className="mt-2 text-[color:var(--color-muted)]">{perfume.mood}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="grid gap-6 md:grid-cols-3">
-              <div className="rounded-[1.75rem] border border-white/10 bg-black/20 p-6">
+              <div className="rounded-[1.5rem] border border-[color:var(--color-accent-soft)]/15 bg-white p-6 shadow-sm">
                 <p className="section-kicker">Top Notes</p>
-                <ul className="mt-4 space-y-2 text-white/70">
+                <ul className="mt-4 space-y-2 text-[color:var(--color-muted)]">
                   {perfume.topNotes.map((note) => (
                     <li key={note}>{note}</li>
                   ))}
                 </ul>
               </div>
-              <div className="rounded-[1.75rem] border border-white/10 bg-black/20 p-6">
+              <div className="rounded-[1.5rem] border border-[color:var(--color-accent-soft)]/15 bg-white p-6 shadow-sm">
                 <p className="section-kicker">Heart Notes</p>
-                <ul className="mt-4 space-y-2 text-white/70">
+                <ul className="mt-4 space-y-2 text-[color:var(--color-muted)]">
                   {perfume.heartNotes.map((note) => (
                     <li key={note}>{note}</li>
                   ))}
                 </ul>
               </div>
-              <div className="rounded-[1.75rem] border border-white/10 bg-black/20 p-6">
+              <div className="rounded-[1.5rem] border border-[color:var(--color-accent-soft)]/15 bg-white p-6 shadow-sm">
                 <p className="section-kicker">Base Notes</p>
-                <ul className="mt-4 space-y-2 text-white/70">
+                <ul className="mt-4 space-y-2 text-[color:var(--color-muted)]">
                   {perfume.baseNotes.map((note) => (
                     <li key={note}>{note}</li>
                   ))}
@@ -97,27 +98,41 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </div>
             </div>
 
-            <div className="rounded-[2rem] border border-white/10 bg-[color:var(--color-panel)] p-8">
+            <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/15 bg-white p-8 shadow-sm">
               <p className="section-kicker">Product Story</p>
-              <p className="mt-4 max-w-3xl text-lg leading-8 text-white/70">
-                {perfume.description} This page is already structured for the
-                next stage, where product data will come from Firebase instead
-                of static content. That means the same page can later support
-                real inventory, availability, and admin-managed updates.
+              <p className="mt-4 max-w-3xl text-base leading-7 text-[color:var(--color-muted)]">
+                {perfume.description} Add the item to cart first, then open the
+                cart when you are done selecting products. From there you can
+                save the order and continue to WhatsApp for payment.
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link href="/products" className="button-ghost">
                   Back to collection
                 </Link>
-                <Link href="/track" className="button-gold">
-                  Track an existing order
+                <Link href="/cart" className="button-gold">
+                  Open cart
                 </Link>
               </div>
             </div>
           </section>
 
           <aside className="lg:sticky lg:top-28 lg:self-start">
-            <BookingForm productId={perfume.id} productName={perfume.name} />
+            <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/15 bg-white p-6 shadow-sm">
+              <p className="section-kicker">Add Selection</p>
+              <h2 className="mt-3 font-serif text-3xl text-[color:var(--color-ink)]">
+                Add this perfume to cart
+              </h2>
+              <p className="mt-3 text-base leading-7 text-[color:var(--color-muted)]">
+                When you finish picking items, open the cart, save the order on
+                the website, and then message the vendor on WhatsApp.
+              </p>
+              <div className="mt-6 flex flex-col gap-3">
+                <AddToCartButton perfume={perfume} fullWidth />
+                <Link href="/cart" className="button-ghost w-full text-center">
+                  Go to cart
+                </Link>
+              </div>
+            </div>
           </aside>
         </div>
       </main>

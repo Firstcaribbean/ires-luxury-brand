@@ -73,7 +73,7 @@ export function BrandLogo({ compact = false, hero = false }: BrandLogoProps) {
           Luxury Brand
         </p>
         {!compact ? (
-          <p className="mt-2 text-[0.65rem] uppercase tracking-[0.35em] text-white/40">
+          <p className="mt-2 text-[0.65rem] uppercase tracking-[0.35em] text-[color:var(--color-muted-soft)]">
             {siteConfig.brandName}
           </p>
         ) : null}

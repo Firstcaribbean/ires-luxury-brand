@@ -4,13 +4,18 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { formatNaira } from "@/lib/currency";
 import {
   getStoredAdminSession,
   listOrders,
   signOutAdmin,
   updateOrderStatus,
 } from "@/lib/orders/repository";
-import { orderStatuses, type OrderRecord, type OrderStatus } from "@/lib/orders/types";
+import {
+  orderStatuses,
+  type OrderRecord,
+  type OrderStatus,
+} from "@/lib/orders/types";
 
 export function AdminDashboard() {
   const router = useRouter();
@@ -83,11 +88,16 @@ export function AdminDashboard() {
         order.status === "With Delivery Company" ||
         order.status === "Out for Delivery",
     ).length;
+    const totalRevenue = orders.reduce(
+      (sum, order) => sum + order.totalAmount,
+      0,
+    );
 
     return {
       bookings: orders.length,
       delivered: deliveredCount,
       inTransit: inTransitCount,
+      totalRevenue,
     };
   }, [orders]);
 
@@ -96,12 +106,12 @@ export function AdminDashboard() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="section-kicker">Vendor Dashboard</p>
-          <h1 className="mt-3 font-serif text-5xl text-white">
+          <h1 className="mt-3 font-serif text-4xl text-[color:var(--color-ink)] sm:text-5xl">
             Order management
           </h1>
-          <p className="mt-3 max-w-2xl leading-7 text-white/65">
-            Update delivery status, review bookings, and keep customer tracking
-            information current from one panel.
+          <p className="mt-3 max-w-2xl leading-7 text-[color:var(--color-muted)]">
+            Review bookings, update order status, and keep customers informed
+            from one lighter, easier-to-use workspace.
           </p>
         </div>
 
@@ -110,44 +120,52 @@ export function AdminDashboard() {
         </button>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        <div className="rounded-[1.75rem] border border-white/10 bg-[color:var(--color-panel)] p-6">
-          <p className="text-xs uppercase tracking-[0.3em] text-white/35">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+          <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
             Total bookings
           </p>
-          <p className="mt-4 font-serif text-5xl text-[color:var(--color-gold-soft)]">
+          <p className="mt-4 font-serif text-4xl text-[color:var(--color-accent-strong)]">
             {stats.bookings}
           </p>
         </div>
-        <div className="rounded-[1.75rem] border border-white/10 bg-[color:var(--color-panel)] p-6">
-          <p className="text-xs uppercase tracking-[0.3em] text-white/35">
+        <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+          <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
             In transit
           </p>
-          <p className="mt-4 font-serif text-5xl text-[color:var(--color-gold-soft)]">
+          <p className="mt-4 font-serif text-4xl text-[color:var(--color-accent-strong)]">
             {stats.inTransit}
           </p>
         </div>
-        <div className="rounded-[1.75rem] border border-white/10 bg-[color:var(--color-panel)] p-6">
-          <p className="text-xs uppercase tracking-[0.3em] text-white/35">
+        <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+          <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
             Delivered
           </p>
-          <p className="mt-4 font-serif text-5xl text-[color:var(--color-gold-soft)]">
+          <p className="mt-4 font-serif text-4xl text-[color:var(--color-accent-strong)]">
             {stats.delivered}
+          </p>
+        </div>
+        <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+          <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
+            Total order value
+          </p>
+          <p className="mt-4 font-serif text-3xl text-[color:var(--color-accent-strong)]">
+            {formatNaira(stats.totalRevenue)}
           </p>
         </div>
       </div>
 
       {error ? (
-        <div className="rounded-[1.5rem] border border-amber-200/20 bg-amber-100/10 p-4 text-sm leading-6 text-amber-100">
+        <div className="rounded-[1.5rem] border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-700">
           {error}
         </div>
       ) : null}
 
-      <section className="rounded-[2rem] border border-white/10 bg-[color:var(--color-panel-strong)] p-6">
+      <section className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-[color:var(--color-panel)] p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="section-kicker">Bookings</p>
-            <h2 className="mt-3 font-serif text-3xl text-white">
+            <h2 className="mt-3 font-serif text-2xl text-[color:var(--color-ink)] sm:text-3xl">
               Customer orders
             </h2>
           </div>
@@ -157,43 +175,65 @@ export function AdminDashboard() {
         </div>
 
         {isLoading ? (
-          <p className="mt-8 text-white/55">Loading orders...</p>
+          <p className="mt-8 text-[color:var(--color-muted)]">Loading orders...</p>
         ) : orders.length ? (
           <div className="mt-8 grid gap-4">
             {orders.map((order) => (
               <article
                 key={order.id}
-                className="rounded-[1.75rem] border border-white/10 bg-black/20 p-5"
+                className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-5 shadow-sm"
               >
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div className="space-y-2">
-                    <p className="text-xs uppercase tracking-[0.3em] text-white/35">
+                <div className="flex flex-wrap items-start justify-between gap-6">
+                  <div className="space-y-3">
+                    <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
                       {order.trackingId}
                     </p>
-                    <h3 className="font-serif text-2xl text-white">
+                    <h3 className="font-serif text-2xl text-[color:var(--color-ink)]">
                       {order.customerName}
                     </h3>
-                    <p className="text-white/65">
-                      {order.productName} • Qty {order.quantity}
+                    <p className="text-[color:var(--color-muted)]">
+                      {order.productName} / Qty {order.quantity}
                     </p>
-                    <p className="text-sm text-white/45">{order.phone}</p>
-                    <p className="text-sm leading-6 text-white/45">
+                    <p className="text-sm font-medium text-[color:var(--color-accent-strong)]">
+                      {formatNaira(order.totalAmount)}
+                    </p>
+                    <p className="text-sm text-[color:var(--color-muted-soft)]">
+                      {order.phone}
+                    </p>
+                    <p className="max-w-xl text-sm leading-6 text-[color:var(--color-muted)]">
                       {order.address}
                     </p>
-                    {order.proofImageUrl ? (
-                      <a
-                        href={order.proofImageUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-sm text-[color:var(--color-gold-soft)]"
-                      >
-                        View delivery proof
-                      </a>
+                    <div className="rounded-[1.2rem] bg-[color:var(--color-panel)] p-4">
+                      <p className="text-xs uppercase tracking-[0.24em] text-[color:var(--color-muted-soft)]">
+                        Items
+                      </p>
+                      <div className="mt-2 space-y-2 text-sm text-[color:var(--color-muted)]">
+                        {order.items.map((item) => (
+                          <p key={`${order.id}-${item.productId}`}>
+                            {item.productName} ({item.size}) x{item.quantity}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                    {order.deliveryNote ? (
+                      <div className="rounded-[1.2rem] border border-[color:var(--color-accent-soft)]/16 bg-[color:var(--color-panel)] p-4">
+                        <p className="text-xs uppercase tracking-[0.24em] text-[color:var(--color-muted-soft)]">
+                          Delivery note
+                        </p>
+                        <p className="mt-2 text-sm leading-6 text-[color:var(--color-muted)]">
+                          {order.deliveryNote}
+                        </p>
+                      </div>
+                    ) : null}
+                    {order.orderReceivedConfirmed ? (
+                      <p className="text-sm font-medium text-[color:var(--color-accent-strong)]">
+                        Customer marked this order as received.
+                      </p>
                     ) : null}
                   </div>
 
                   <div className="flex min-w-[14rem] flex-col gap-3">
-                    <label className="text-xs uppercase tracking-[0.25em] text-white/35">
+                    <label className="text-xs uppercase tracking-[0.25em] text-[color:var(--color-muted-soft)]">
                       Update status
                     </label>
                     <select
@@ -208,12 +248,12 @@ export function AdminDashboard() {
                       className="input-shell"
                     >
                       {orderStatuses.map((status) => (
-                        <option key={status} value={status} className="bg-black">
+                        <option key={status} value={status}>
                           {status}
                         </option>
                       ))}
                     </select>
-                    <p className="text-sm text-white/45">
+                    <p className="text-sm text-[color:var(--color-muted-soft)]">
                       Last updated{" "}
                       {new Date(order.updatedAt).toLocaleString("en-US", {
                         dateStyle: "medium",
@@ -226,7 +266,7 @@ export function AdminDashboard() {
             ))}
           </div>
         ) : (
-          <p className="mt-8 text-white/55">No orders yet.</p>
+          <p className="mt-8 text-[color:var(--color-muted)]">No orders yet.</p>
         )}
       </section>
     </div>

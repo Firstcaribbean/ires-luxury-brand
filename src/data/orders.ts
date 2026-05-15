@@ -10,6 +10,16 @@ export const demoSeedOrders: OrderRecord[] = [
     address: "14 Mercer Crescent, Los Angeles, CA",
     productName: "Nocturne Gold",
     quantity: 1,
+    totalAmount: 185000,
+    items: [
+      {
+        productId: "p-001",
+        productName: "Nocturne Gold",
+        quantity: 1,
+        unitPrice: 185000,
+        size: "100ml Extrait",
+      },
+    ],
     status: "With Delivery Company",
     statusHistory: [
       { status: "Order Received", updatedAt: "2026-05-13T10:20:00.000Z" },
@@ -22,7 +32,6 @@ export const demoSeedOrders: OrderRecord[] = [
         updatedAt: "2026-05-15T09:10:00.000Z",
       },
     ],
-    proofImageUrl: null,
     deliveryNote: "",
     orderReceivedConfirmed: false,
     createdAt: "2026-05-13T10:20:00.000Z",
@@ -37,6 +46,16 @@ export const demoSeedOrders: OrderRecord[] = [
     address: "220 Park Lane, Beverly Hills, CA",
     productName: "Velvet Ember",
     quantity: 2,
+    totalAmount: 420000,
+    items: [
+      {
+        productId: "p-003",
+        productName: "Velvet Ember",
+        quantity: 2,
+        unitPrice: 210000,
+        size: "100ml Parfum Intense",
+      },
+    ],
     status: "Out for Delivery",
     statusHistory: [
       { status: "Order Received", updatedAt: "2026-05-13T14:15:00.000Z" },
@@ -53,7 +72,6 @@ export const demoSeedOrders: OrderRecord[] = [
         updatedAt: "2026-05-15T10:15:00.000Z",
       },
     ],
-    proofImageUrl: null,
     deliveryNote: "",
     orderReceivedConfirmed: false,
     createdAt: "2026-05-13T14:15:00.000Z",
@@ -68,6 +86,16 @@ export const demoSeedOrders: OrderRecord[] = [
     address: "8 Ocean Terrace, Santa Monica, CA",
     productName: "Ivory Bloom",
     quantity: 1,
+    totalAmount: 165000,
+    items: [
+      {
+        productId: "p-002",
+        productName: "Ivory Bloom",
+        quantity: 1,
+        unitPrice: 165000,
+        size: "75ml Eau de Parfum",
+      },
+    ],
     status: "Delivered",
     statusHistory: [
       { status: "Order Received", updatedAt: "2026-05-11T09:00:00.000Z" },
@@ -85,7 +113,6 @@ export const demoSeedOrders: OrderRecord[] = [
       },
       { status: "Delivered", updatedAt: "2026-05-14T16:50:00.000Z" },
     ],
-    proofImageUrl: null,
     deliveryNote: "Customer confirmed safe arrival.",
     orderReceivedConfirmed: true,
     createdAt: "2026-05-11T09:00:00.000Z",

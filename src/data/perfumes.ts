@@ -6,7 +6,7 @@ export type Perfume = {
   description: string;
   story: string;
   fragranceFamily: string;
-  price: string;
+  price: number;
   size: string;
   topNotes: string[];
   heartNotes: string[];
@@ -26,13 +26,13 @@ export const perfumes: Perfume[] = [
     story:
       "Crafted for candlelit dinners and black-tie entrances, Nocturne Gold opens with luminous spice before unfolding into a velvet floral core.",
     fragranceFamily: "Amber Floral",
-    price: "$185",
+    price: 185000,
     size: "100ml Extrait",
     topNotes: ["Saffron", "Pink pepper", "Bergamot"],
     heartNotes: ["Turkish rose", "Jasmine sambac", "Orris"],
     baseNotes: ["Amber resin", "Suede", "Vanilla bean"],
     mood: "Opulent, intimate, unforgettable",
-    heroAccent: "rgba(201, 161, 92, 0.34)",
+    heroAccent: "rgba(255, 121, 176, 0.18)",
   },
   {
     id: "p-002",
@@ -44,13 +44,13 @@ export const perfumes: Perfume[] = [
     story:
       "Ivory Bloom captures the feeling of silk curtains, clean skin, and a bouquet arranged with architectural precision.",
     fragranceFamily: "White Floral Musk",
-    price: "$165",
+    price: 165000,
     size: "75ml Eau de Parfum",
     topNotes: ["Neroli", "Pear blossom", "Mandarin"],
     heartNotes: ["Tuberose", "Orange flower", "Magnolia"],
     baseNotes: ["Cashmere musk", "White sandalwood", "Benzoin"],
     mood: "Soft, refined, luminous",
-    heroAccent: "rgba(240, 232, 212, 0.34)",
+    heroAccent: "rgba(255, 182, 213, 0.18)",
   },
   {
     id: "p-003",
@@ -62,13 +62,13 @@ export const perfumes: Perfume[] = [
     story:
       "Velvet Ember was designed for collectors who want richness without noise, with smoke and spice settling into a tailored woody finish.",
     fragranceFamily: "Woody Spiced",
-    price: "$210",
+    price: 210000,
     size: "100ml Parfum Intense",
     topNotes: ["Cardamom", "Black tea", "Clove bud"],
     heartNotes: ["Incense", "Cacao husk", "Labdanum"],
     baseNotes: ["Atlas cedar", "Patchouli", "Tonka"],
     mood: "Bold, polished, cinematic",
-    heroAccent: "rgba(159, 112, 78, 0.32)",
+    heroAccent: "rgba(255, 102, 163, 0.18)",
   },
   {
     id: "p-004",
@@ -80,13 +80,13 @@ export const perfumes: Perfume[] = [
     story:
       "Celestial Oud balances tradition and minimalism, bringing a rare wood accord into a cool, contemporary silhouette.",
     fragranceFamily: "Oud Amber",
-    price: "$240",
+    price: 240000,
     size: "100ml Extrait",
     topNotes: ["Plum nectar", "Elemi", "Cracked coriander"],
     heartNotes: ["Oud accord", "Iris smoke", "Violet leaf"],
     baseNotes: ["Mineral amber", "Guaiac wood", "Musk"],
     mood: "Rare, magnetic, modern",
-    heroAccent: "rgba(122, 108, 146, 0.28)",
+    heroAccent: "rgba(255, 142, 194, 0.18)",
   },
 ];
 

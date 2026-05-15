@@ -8,8 +8,7 @@ export function DeliveryConfirmationForm() {
   const [submitted, setSubmitted] = useState(false);
   const [trackingId, setTrackingId] = useState("");
   const [note, setNote] = useState("");
-  const [file, setFile] = useState<File | null>(null);
-  const [fileName, setFileName] = useState("");
+  const [receivedConfirmed, setReceivedConfirmed] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -22,7 +21,6 @@ export function DeliveryConfirmationForm() {
       await confirmDelivery({
         trackingId,
         note,
-        file,
       });
       setSubmitted(true);
     } catch (submissionError) {
@@ -37,18 +35,17 @@ export function DeliveryConfirmationForm() {
   }
 
   return (
-    <div className="rounded-[2rem] border border-white/10 bg-[color:var(--color-panel-strong)] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
+    <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/20 bg-white p-6 shadow-sm">
       {!submitted ? (
         <>
           <div className="space-y-3">
-            <p className="section-kicker">Proof of Delivery</p>
-            <h2 className="font-serif text-4xl text-white">
+            <p className="section-kicker">Delivery Confirmation</p>
+            <h2 className="font-serif text-3xl text-[color:var(--color-ink)]">
               Confirm that your order has arrived
             </h2>
-            <p className="leading-7 text-white/65">
-              Customers can upload a quick photo and mark the perfume as
-              received. In the final version, this will be stored in Firebase
-              Storage for the vendor panel.
+            <p className="leading-7 text-[color:var(--color-muted)]">
+              Customers can tick the confirmation box, leave a review note, and
+              submit the form after receiving the perfume.
             </p>
           </div>
 
@@ -64,36 +61,24 @@ export function DeliveryConfirmationForm() {
               rows={4}
               value={note}
               onChange={(event) => setNote(event.target.value)}
-              placeholder="Optional delivery note"
+              placeholder="Review note or delivery comment"
               className="input-shell resize-none"
             />
-            <label className="flex cursor-pointer flex-col gap-3 rounded-[1.5rem] border border-dashed border-white/20 bg-black/25 p-5 text-white/70 transition hover:border-[color:var(--color-gold-soft)] hover:text-white">
-              <span>Upload photo of received item</span>
+            <label className="flex items-start gap-3 rounded-2xl border border-[color:var(--color-accent-soft)]/20 bg-[color:var(--color-panel)] p-4 text-sm text-[color:var(--color-muted)]">
               <input
                 required
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(event) => {
-                  const nextFile = event.target.files?.[0] ?? null;
-                  setFile(nextFile);
-                  setFileName(nextFile?.name ?? "");
-                }}
+                type="checkbox"
+                checked={receivedConfirmed}
+                onChange={(event) => setReceivedConfirmed(event.target.checked)}
+                className="mt-1 h-4 w-4 accent-[color:var(--color-accent-soft)]"
               />
-              <span className="text-sm text-white/45">
-                {fileName || "No file selected yet"}
-              </span>
-            </label>
-
-            <label className="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/25 p-4 text-sm text-white/65">
-              <input required type="checkbox" className="mt-1 h-4 w-4 accent-[color:var(--color-gold-soft)]" />
               <span>I confirm that the order was received in good condition.</span>
             </label>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex rounded-full bg-[color:var(--color-gold-soft)] px-6 py-3 text-sm font-medium uppercase tracking-[0.25em] text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-70"
+              className="button-gold disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isSubmitting ? "Sending confirmation..." : "Confirm Order Received"}
             </button>
@@ -108,12 +93,12 @@ export function DeliveryConfirmationForm() {
       ) : (
         <div className="space-y-3">
           <p className="section-kicker">Confirmation Sent</p>
-          <h2 className="font-serif text-4xl text-white">
+          <h2 className="font-serif text-3xl text-[color:var(--color-ink)]">
             Delivery confirmation captured
           </h2>
-          <p className="leading-7 text-white/65">
-            The final build will save this confirmation, photo proof, and
-            timestamp into Firebase for the vendor to review.
+          <p className="leading-7 text-[color:var(--color-muted)]">
+            Thank you. Your confirmation and review note have been saved for
+            the vendor.
           </p>
         </div>
       )}

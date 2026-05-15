@@ -16,10 +16,12 @@ export function SectionHeading({
   return (
     <div className={`flex max-w-2xl flex-col gap-4 ${textAlign}`}>
       <p className="section-kicker">{eyebrow}</p>
-      <h2 className="font-serif text-4xl leading-tight text-white sm:text-5xl">
+      <h2 className="font-serif text-3xl leading-tight text-[color:var(--color-ink)] sm:text-4xl">
         {title}
       </h2>
-      <p className="text-base leading-8 text-white/65 sm:text-lg">{body}</p>
+      <p className="text-base leading-7 text-[color:var(--color-muted)]">
+        {body}
+      </p>
     </div>
   );
 }

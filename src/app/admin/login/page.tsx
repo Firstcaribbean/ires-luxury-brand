@@ -13,13 +13,14 @@ export default function AdminLoginPage() {
     <>
       <SiteHeader />
       <main className="mx-auto grid w-full max-w-7xl gap-10 px-6 py-16 lg:grid-cols-[0.95fr_1.05fr] lg:px-10 lg:py-20">
-        <section className="rounded-[2rem] border border-white/10 bg-[color:var(--color-panel-strong)] p-8">
+        <section className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-8 shadow-sm">
           <p className="section-kicker">Vendor Access</p>
-          <h1 className="mt-4 font-serif text-5xl text-white">Admin sign-in</h1>
-          <p className="mt-4 max-w-xl leading-7 text-white/65">
-            This is the shell for the private vendor panel. In the next phase,
-            it will connect to Firebase Authentication for a protected order
-            management experience.
+          <h1 className="mt-4 font-serif text-4xl text-[color:var(--color-ink)] sm:text-5xl">
+            Admin sign-in
+          </h1>
+          <p className="mt-4 max-w-xl leading-7 text-[color:var(--color-muted)]">
+            Sign in to manage bookings, update order status, and keep customer
+            tracking information current.
           </p>
 
           <div className="mt-8">
@@ -28,14 +29,14 @@ export default function AdminLoginPage() {
         </section>
 
         <section className="space-y-6">
-          <div className="rounded-[2rem] border border-white/10 bg-[color:var(--color-panel)] p-8">
+          <div className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-[color:var(--color-panel)] p-8 shadow-sm">
             <p className="section-kicker">Dashboard Preview</p>
-            <h2 className="mt-4 font-serif text-4xl text-white">
+            <h2 className="mt-4 font-serif text-3xl text-[color:var(--color-ink)] sm:text-4xl">
               What the vendor panel will manage
             </h2>
-            <p className="mt-4 leading-7 text-white/65">
-              Orders, tracking IDs, dispatch updates, and delivery proof all
-              live in one workspace for the perfume vendor.
+            <p className="mt-4 leading-7 text-[color:var(--color-muted)]">
+              Orders, tracking IDs, dispatch updates, and customer delivery
+              notes all live in one workspace for the vendor.
             </p>
           </div>
 
@@ -43,22 +44,23 @@ export default function AdminLoginPage() {
             {adminPreviewStats.map((item) => (
               <div
                 key={item.label}
-                className="rounded-[1.75rem] border border-white/10 bg-black/25 p-6"
+                className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm"
               >
-                <p className="text-xs uppercase tracking-[0.3em] text-white/35">
+                <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--color-muted-soft)]">
                   {item.label}
                 </p>
-                <p className="mt-4 font-serif text-5xl text-[color:var(--color-gold-soft)]">
+                <p className="mt-4 font-serif text-4xl text-[color:var(--color-accent-strong)] sm:text-5xl">
                   {item.value}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="rounded-[2rem] border border-white/10 bg-black/25 p-8">
-            <p className="leading-7 text-white/65">
-              Once we connect Firebase, this area becomes the real working
-              dashboard for the business.
+          <div className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-8 shadow-sm">
+            <p className="leading-7 text-[color:var(--color-muted)]">
+              Once signed in, the vendor can review orders saved from the cart,
+              send customers to WhatsApp payment, and update tracking from one
+              place.
             </p>
           </div>
         </section>

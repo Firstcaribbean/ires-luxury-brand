@@ -2,15 +2,23 @@
 
 import { FormEvent, useState } from "react";
 
-import { createOrder } from "@/lib/orders/repository";
 import { siteConfig } from "@/data/site-config";
+import { createOrder } from "@/lib/orders/repository";
+import { formatNaira } from "@/lib/currency";
 
 type BookingFormProps = {
   productId?: string;
   productName: string;
+  unitPrice?: number;
+  size?: string;
 };
 
-export function BookingForm({ productId, productName }: BookingFormProps) {
+export function BookingForm({
+  productId,
+  productName,
+  unitPrice = 0,
+  size = "Standard",
+}: BookingFormProps) {
   const [customerName, setCustomerName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -29,21 +37,28 @@ export function BookingForm({ productId, productName }: BookingFormProps) {
         customerName,
         phone,
         address,
-        productId,
-        productName,
-        quantity: Number(quantity),
+        items: [
+          {
+            productId: productId ?? productName.toLowerCase().replace(/\s+/g, "-"),
+            productName,
+            quantity: Number(quantity),
+            unitPrice,
+            size,
+          },
+        ],
       });
 
       setTrackingId(order.trackingId);
 
       const message = [
-        `Hello ${siteConfig.brandName}, I would like to book an order.`,
+        `Hello ${siteConfig.brandName}, I want to complete my order.`,
         `Name: ${customerName}`,
         `Phone: ${phone}`,
-        `Product: ${productName}`,
-        `Quantity: ${quantity}`,
         `Delivery Address: ${address}`,
         `Tracking ID: ${order.trackingId}`,
+        `Product: ${productName}`,
+        `Quantity: ${quantity}`,
+        `Total Amount: ${formatNaira(unitPrice * Number(quantity))}`,
       ].join("\n");
 
       const encodedMessage = encodeURIComponent(message);
@@ -60,11 +75,13 @@ export function BookingForm({ productId, productName }: BookingFormProps) {
   }
 
   return (
-    <div className="rounded-[2rem] border border-white/10 bg-[color:var(--color-panel-strong)] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
+    <div className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
       <div className="space-y-3">
         <p className="section-kicker">Book Your Scent</p>
-        <h3 className="font-serif text-3xl text-white">Reserve via WhatsApp</h3>
-        <p className="leading-7 text-white/65">
+        <h3 className="font-serif text-3xl text-[color:var(--color-ink)]">
+          Save order and continue on WhatsApp
+        </h3>
+        <p className="leading-7 text-[color:var(--color-muted)]">
           Submit your details and continue the payment and delivery confirmation
           directly with the vendor on WhatsApp.
         </p>
@@ -97,7 +114,7 @@ export function BookingForm({ productId, productName }: BookingFormProps) {
           <input
             readOnly
             value={productName}
-            className="input-shell text-white/75"
+            className="input-shell"
           />
           <input
             required
@@ -109,12 +126,12 @@ export function BookingForm({ productId, productName }: BookingFormProps) {
           />
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-black/35 p-4 text-sm text-white/55">
+        <div className="rounded-2xl border border-[color:var(--color-accent-soft)]/16 bg-[color:var(--color-panel)] p-4 text-sm text-[color:var(--color-muted)]">
           Your tracking ID is generated on submit{trackingId ? (
             <>
               {" "}
               and the latest preview is{" "}
-              <span className="text-[color:var(--color-gold-soft)]">
+              <span className="font-medium text-[color:var(--color-accent-strong)]">
                 {trackingId}
               </span>
               .
@@ -127,13 +144,13 @@ export function BookingForm({ productId, productName }: BookingFormProps) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex w-full items-center justify-center rounded-full bg-[color:var(--color-gold-soft)] px-6 py-3 text-sm font-medium uppercase tracking-[0.28em] text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-70"
+          className="button-gold w-full disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isSubmitting ? "Saving booking..." : "Continue to WhatsApp"}
         </button>
 
         {error ? (
-          <div className="rounded-2xl border border-amber-200/20 bg-amber-100/10 p-4 text-sm leading-6 text-amber-100">
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-700">
             {error}
           </div>
         ) : null}

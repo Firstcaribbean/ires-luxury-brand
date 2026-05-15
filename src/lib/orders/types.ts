@@ -13,6 +13,14 @@ export type OrderStatusEntry = {
   updatedAt: string;
 };
 
+export type OrderItem = {
+  productId: string;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+  size: string;
+};
+
 export type OrderRecord = {
   id: string;
   trackingId: string;
@@ -20,12 +28,12 @@ export type OrderRecord = {
   phone: string;
   normalizedPhone: string;
   address: string;
-  productId?: string;
   productName: string;
   quantity: number;
+  totalAmount: number;
+  items: OrderItem[];
   status: OrderStatus;
   statusHistory: OrderStatusEntry[];
-  proofImageUrl?: string | null;
   deliveryNote?: string;
   orderReceivedConfirmed: boolean;
   createdAt: string;
@@ -36,15 +44,12 @@ export type BookingInput = {
   customerName: string;
   phone: string;
   address: string;
-  productId?: string;
-  productName: string;
-  quantity: number;
+  items: OrderItem[];
 };
 
 export type DeliveryConfirmationInput = {
   trackingId: string;
   note: string;
-  file?: File | null;
 };
 
 export type AdminSession = {

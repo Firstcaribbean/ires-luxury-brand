@@ -11,8 +11,8 @@ export default function ProductsPage() {
       <main className="mx-auto w-full max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
         <SectionHeading
           eyebrow="Collection"
-          title="A curated perfume line designed for a premium digital storefront."
-          body="Each fragrance already has the core content we need for a cinematic product page and a booking-first sales flow."
+          title="Choose your perfumes, add them to cart, and book when you are ready."
+          body="Customers can add items to cart first, then save the order on the site before moving to WhatsApp for payment."
         />
 
         <div className="mt-12 grid gap-6 lg:grid-cols-2">

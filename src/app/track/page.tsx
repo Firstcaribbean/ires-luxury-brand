@@ -10,8 +10,8 @@ export default function TrackPage() {
       <main className="mx-auto w-full max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
         <SectionHeading
           eyebrow="Track Order"
-          title="A simple dashboard for customers who want delivery visibility."
-          body="This demo already lets you search sample orders. In the production build, the same interface will read from Firebase using a tracking ID or phone number."
+          title="Check the current status of any saved order."
+          body="Use the tracking ID or the phone number used during booking to check the current order status, review progress, and see any delivery note that was submitted."
         />
 
         <div className="mt-12">

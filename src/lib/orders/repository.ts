@@ -13,7 +13,6 @@ import {
   where,
 } from "firebase/firestore";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
 import { demoSeedOrders } from "@/data/orders";
 import { siteConfig } from "@/data/site-config";
@@ -22,6 +21,7 @@ import type {
   AdminSession,
   BookingInput,
   DeliveryConfirmationInput,
+  OrderItem,
   OrderRecord,
   OrderStatus,
   OrderStatusEntry,
@@ -50,10 +50,23 @@ function generateTrackingId() {
   return `MDP-${base}`;
 }
 
+function summarizeItems(items: OrderItem[]) {
+  if (!items.length) {
+    return "Perfume order";
+  }
+
+  if (items.length === 1) {
+    return items[0].productName;
+  }
+
+  return `${items[0].productName} + ${items.length - 1} more`;
+}
+
 function parseOrderRecord(raw: Record<string, unknown>, id: string): OrderRecord {
   const statusHistory = Array.isArray(raw.statusHistory)
     ? (raw.statusHistory as OrderStatusEntry[])
     : [];
+  const items = Array.isArray(raw.items) ? (raw.items as OrderItem[]) : [];
 
   return {
     id,
@@ -62,14 +75,12 @@ function parseOrderRecord(raw: Record<string, unknown>, id: string): OrderRecord
     phone: String(raw.phone ?? ""),
     normalizedPhone: String(raw.normalizedPhone ?? ""),
     address: String(raw.address ?? ""),
-    productId:
-      typeof raw.productId === "string" ? raw.productId : undefined,
-    productName: String(raw.productName ?? ""),
+    productName: String(raw.productName ?? summarizeItems(items)),
     quantity: Number(raw.quantity ?? 1),
+    totalAmount: Number(raw.totalAmount ?? 0),
+    items,
     status: raw.status as OrderStatus,
     statusHistory,
-    proofImageUrl:
-      typeof raw.proofImageUrl === "string" ? raw.proofImageUrl : null,
     deliveryNote: String(raw.deliveryNote ?? ""),
     orderReceivedConfirmed: Boolean(raw.orderReceivedConfirmed),
     createdAt: String(raw.createdAt ?? new Date().toISOString()),
@@ -122,19 +133,14 @@ function upsertStatusHistory(
   return [...statusHistory, { status, updatedAt }];
 }
 
-async function fileToDataUrl(file: File) {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(new Error("Could not read the uploaded file."));
-    reader.readAsDataURL(file);
-  });
-}
-
 export async function createOrder(input: BookingInput) {
   const createdAt = new Date().toISOString();
   const trackingId = generateTrackingId();
+  const totalAmount = input.items.reduce(
+    (sum, item) => sum + item.unitPrice * item.quantity,
+    0,
+  );
+  const quantity = input.items.reduce((sum, item) => sum + item.quantity, 0);
   const order: OrderRecord = {
     id: trackingId,
     trackingId,
@@ -142,12 +148,12 @@ export async function createOrder(input: BookingInput) {
     phone: input.phone.trim(),
     normalizedPhone: normalizePhone(input.phone),
     address: input.address.trim(),
-    productId: input.productId,
-    productName: input.productName,
-    quantity: input.quantity,
+    productName: summarizeItems(input.items),
+    quantity,
+    totalAmount,
+    items: input.items,
     status: "Order Received",
     statusHistory: [{ status: "Order Received", updatedAt: createdAt }],
-    proofImageUrl: null,
     deliveryNote: "",
     orderReceivedConfirmed: false,
     createdAt,
@@ -296,7 +302,6 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
 export async function confirmDelivery({
   trackingId,
   note,
-  file,
 }: DeliveryConfirmationInput) {
   const order = await findOrderByQuery(trackingId);
 
@@ -305,23 +310,6 @@ export async function confirmDelivery({
   }
 
   const updatedAt = new Date().toISOString();
-  let proofImageUrl = order.proofImageUrl ?? null;
-
-  if (file) {
-    const fileDataUrl = await fileToDataUrl(file);
-    const firebase = getFirebaseServices();
-
-    if (firebase) {
-      const imageRef = ref(
-        firebase.storage,
-        `delivery-proofs/${order.trackingId}-${file.name}`,
-      );
-      await uploadString(imageRef, fileDataUrl, "data_url");
-      proofImageUrl = await getDownloadURL(imageRef);
-    } else {
-      proofImageUrl = fileDataUrl;
-    }
-  }
 
   const statusHistory = upsertStatusHistory(
     order.statusHistory,
@@ -332,7 +320,6 @@ export async function confirmDelivery({
   const nextRecord: Partial<OrderRecord> = {
     status: "Delivered",
     statusHistory,
-    proofImageUrl,
     deliveryNote: note.trim(),
     orderReceivedConfirmed: true,
     updatedAt,
