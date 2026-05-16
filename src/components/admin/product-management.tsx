@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
+import { adminStarterProducts } from "@/data/admin-starter-products";
 import {
   getBrandSettings,
   saveBrandSettings,
@@ -117,6 +118,7 @@ export function ProductManagement() {
   const [brandForm, setBrandForm] = useState<BrandSettings | null>(null);
   const [isSavingProduct, setIsSavingProduct] = useState(false);
   const [isSavingBrand, setIsSavingBrand] = useState(false);
+  const [isImportingCatalog, setIsImportingCatalog] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -149,6 +151,19 @@ export function ProductManagement() {
     () => products.find((product) => product.id === selectedProductId) ?? null,
     [products, selectedProductId],
   );
+  const existingSlugs = useMemo(
+    () => new Set(products.map((product) => product.slug)),
+    [products],
+  );
+
+  const starterCatalog = useMemo(
+    () =>
+      adminStarterProducts.map((product) => ({
+        ...product,
+        alreadyAdded: existingSlugs.has(product.slug),
+      })),
+    [existingSlugs],
+  );
 
   function handleSelectProduct(product: Perfume) {
     setSelectedProductId(product.id);
@@ -158,6 +173,55 @@ export function ProductManagement() {
   function handleCreateNew() {
     setSelectedProductId(null);
     setProductForm(toFormState(createEmptyProduct()));
+  }
+
+  function handleLoadStarterProduct(product: ProductInput) {
+    setSelectedProductId(null);
+    setProductForm(toFormState(product));
+    setError("");
+  }
+
+  async function handleImportStarterProduct(product: ProductInput) {
+    setIsImportingCatalog(true);
+    setError("");
+
+    try {
+      await createProduct(product);
+    } catch (importError) {
+      setError(
+        importError instanceof Error
+          ? importError.message
+          : "Starter product could not be added.",
+      );
+    } finally {
+      setIsImportingCatalog(false);
+    }
+  }
+
+  async function handleImportStarterCatalog() {
+    const missingProducts = adminStarterProducts.filter(
+      (product) => !existingSlugs.has(product.slug),
+    );
+
+    if (!missingProducts.length) {
+      setError("All starter catalog products are already in your store.");
+      return;
+    }
+
+    setIsImportingCatalog(true);
+    setError("");
+
+    try {
+      await Promise.all(missingProducts.map((product) => createProduct(product)));
+    } catch (importError) {
+      setError(
+        importError instanceof Error
+          ? importError.message
+          : "Starter catalog could not be imported.",
+      );
+    } finally {
+      setIsImportingCatalog(false);
+    }
   }
 
   async function handleSaveProduct(event: FormEvent<HTMLFormElement>) {
@@ -241,10 +305,85 @@ export function ProductManagement() {
             <h2 className="mt-3 font-serif text-3xl text-[color:var(--color-ink)]">
               Create, edit, and remove perfumes
             </h2>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-[color:var(--color-muted)]">
+              Starter catalog prices below are editable reference prices based on
+              current online listings. Add them in one click, then paste each
+              image URL whenever you are ready to publish the final product look.
+            </p>
           </div>
-          <button type="button" className="button-gold" onClick={handleCreateNew}>
-            New product
-          </button>
+          <div className="flex flex-wrap gap-3">
+            <button type="button" className="button-ghost" onClick={handleCreateNew}>
+              New product
+            </button>
+            <button
+              type="button"
+              className="button-gold disabled:cursor-not-allowed disabled:opacity-70"
+              onClick={() => void handleImportStarterCatalog()}
+              disabled={isImportingCatalog}
+            >
+              {isImportingCatalog ? "Adding catalog..." : "Add starter catalog"}
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-8 rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/14 bg-[color:var(--color-panel)] p-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="section-kicker">Quick Add Catalog</p>
+              <h3 className="mt-2 font-serif text-2xl text-[color:var(--color-ink)]">
+                Online-price starter products
+              </h3>
+            </div>
+            <p className="text-sm text-[color:var(--color-muted-soft)]">
+              {starterCatalog.filter((product) => product.alreadyAdded).length} of{" "}
+              {starterCatalog.length} already added
+            </p>
+          </div>
+
+          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {starterCatalog.map((product) => (
+              <article
+                key={product.slug}
+                className="rounded-[1.35rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-4 shadow-sm"
+              >
+                <p className="section-kicker">{product.fragranceFamily}</p>
+                <h4 className="mt-2 font-serif text-xl text-[color:var(--color-ink)]">
+                  {product.name}
+                </h4>
+                <p className="mt-2 text-xs uppercase tracking-[0.18em] text-[color:var(--color-muted-soft)]">
+                  {product.size}
+                </p>
+                <p className="mt-3 text-sm leading-6 text-[color:var(--color-muted)]">
+                  {product.description}
+                </p>
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <p className="font-serif text-xl text-[color:var(--color-accent-strong)]">
+                    {formatNaira(product.price)}
+                  </p>
+                  <p className="text-xs uppercase tracking-[0.18em] text-[color:var(--color-muted-soft)]">
+                    {product.alreadyAdded ? "In store" : "Ready to add"}
+                  </p>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => handleLoadStarterProduct(product)}
+                    className="button-ghost"
+                  >
+                    Load form
+                  </button>
+                  <button
+                    type="button"
+                    disabled={product.alreadyAdded || isImportingCatalog}
+                    onClick={() => void handleImportStarterProduct(product)}
+                    className="button-gold disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {product.alreadyAdded ? "Added" : "Add product"}
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">

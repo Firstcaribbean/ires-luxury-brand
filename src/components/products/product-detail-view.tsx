@@ -68,6 +68,8 @@ export function ProductDetailView({ slug }: ProductDetailViewProps) {
     );
   }
 
+  const hasImage = Boolean(perfume.imageUrl.trim());
+
   return (
     <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
       <section className="space-y-8">
@@ -80,11 +82,17 @@ export function ProductDetailView({ slug }: ProductDetailViewProps) {
           />
           <div className="relative grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
             <div className="overflow-hidden rounded-[1.5rem] bg-[color:var(--color-panel)]">
-              <img
-                src={perfume.imageUrl}
-                alt={perfume.name}
-                className="h-full min-h-[20rem] w-full object-cover"
-              />
+              {hasImage ? (
+                <img
+                  src={perfume.imageUrl}
+                  alt={perfume.name}
+                  className="h-full min-h-[20rem] w-full object-cover"
+                />
+              ) : (
+                <div className="flex min-h-[20rem] w-full items-center justify-center bg-[color:var(--color-panel-strong)] px-6 text-center text-xs font-semibold uppercase tracking-[0.26em] text-[color:var(--color-muted-soft)]">
+                  Product image coming soon
+                </div>
+              )}
             </div>
             <div className="space-y-5">
               <p className="section-kicker">{perfume.fragranceFamily}</p>

@@ -9,6 +9,8 @@ type PerfumeCardProps = {
 };
 
 export function PerfumeCard({ perfume }: PerfumeCardProps) {
+  const hasImage = Boolean(perfume.imageUrl.trim());
+
   return (
     <article className="group relative overflow-hidden rounded-[1.5rem] border border-[color:var(--color-accent-soft)]/15 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[color:var(--color-accent-soft)]/45">
       <div
@@ -20,11 +22,17 @@ export function PerfumeCard({ perfume }: PerfumeCardProps) {
       <div className="relative flex min-h-[12.5rem] flex-col justify-between gap-4">
         <div className="grid gap-4 sm:grid-cols-[6.5rem_1fr] sm:items-start">
           <div className="overflow-hidden rounded-[1.15rem] bg-[color:var(--color-panel)]">
-            <img
-              src={perfume.imageUrl}
-              alt={perfume.name}
-              className="h-28 w-full object-cover sm:h-32"
-            />
+            {hasImage ? (
+              <img
+                src={perfume.imageUrl}
+                alt={perfume.name}
+                className="h-28 w-full object-cover sm:h-32"
+              />
+            ) : (
+              <div className="flex h-28 w-full items-center justify-center bg-[color:var(--color-panel-strong)] px-4 text-center text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-[color:var(--color-muted-soft)] sm:h-32">
+                Image coming soon
+              </div>
+            )}
           </div>
           <div className="space-y-3">
             <p className="section-kicker">{perfume.fragranceFamily}</p>
