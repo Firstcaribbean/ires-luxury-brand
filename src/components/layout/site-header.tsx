@@ -13,7 +13,6 @@ const navItems = [
   { href: "/cart", label: "Cart" },
   { href: "/track", label: "Track Order" },
   { href: "/confirm-delivery", label: "Confirm Delivery" },
-  { href: "/admin/login", label: "Vendor Panel" },
 ];
 
 export function SiteHeader() {
