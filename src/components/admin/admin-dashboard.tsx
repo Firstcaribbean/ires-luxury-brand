@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { BrandSettingsPanel } from "@/components/admin/brand-settings-panel";
 import { ProductManagement } from "@/components/admin/product-management";
 import { formatNaira } from "@/lib/currency";
 import {
@@ -28,6 +29,8 @@ type OrderEditForm = {
   status: OrderStatus;
   itemsText: string;
 };
+
+type AdminSection = "overview" | "orders" | "products" | "brand";
 
 function toItemsText(items: OrderItem[]) {
   return items
@@ -92,12 +95,14 @@ function toEditForm(order: OrderRecord): OrderEditForm {
 
 export function AdminDashboard() {
   const router = useRouter();
+  const [activeSection, setActiveSection] = useState<AdminSection>("overview");
   const [orders, setOrders] = useState<OrderRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [savingOrderId, setSavingOrderId] = useState("");
   const [editingOrderId, setEditingOrderId] = useState("");
   const [editForm, setEditForm] = useState<OrderEditForm | null>(null);
+  const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
 
   async function loadOrders() {
     setError("");
@@ -152,11 +157,13 @@ export function AdminDashboard() {
     setEditingOrderId(order.id);
     setEditForm(toEditForm(order));
     setError("");
+    setIsOrderDialogOpen(true);
   }
 
   function handleCancelEdit() {
     setEditingOrderId("");
     setEditForm(null);
+    setIsOrderDialogOpen(false);
   }
 
   async function handleSaveEdit(orderId: string) {
@@ -237,255 +244,216 @@ export function AdminDashboard() {
   }, [orders]);
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
+    <div className="grid gap-8 xl:grid-cols-[18rem_minmax(0,1fr)]">
+      <aside className="xl:sticky xl:top-6 xl:self-start">
+        <div className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-5 shadow-sm">
           <p className="section-kicker">Vendor Dashboard</p>
-          <h1 className="mt-3 font-serif text-4xl text-[color:var(--color-ink)] sm:text-5xl">
-            Order management
+          <h1 className="mt-3 font-serif text-3xl text-[color:var(--color-ink)]">
+            Admin workspace
           </h1>
-          <p className="mt-3 max-w-2xl leading-7 text-[color:var(--color-muted)]">
-            Review bookings, edit customer selections, void unpaid orders, or
-            remove bookings entirely when a client changes their mind.
+          <p className="mt-3 text-sm leading-6 text-[color:var(--color-muted)]">
+            Use the side panel to move between orders, products, and brand
+            settings without crowding the page.
           </p>
-        </div>
 
-        <button type="button" className="button-ghost" onClick={handleSignOut}>
-          Sign out
-        </button>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
-          <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
-            Total bookings
-          </p>
-          <p className="mt-4 font-serif text-4xl text-[color:var(--color-accent-strong)]">
-            {stats.bookings}
-          </p>
-        </div>
-        <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
-          <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
-            In transit
-          </p>
-          <p className="mt-4 font-serif text-4xl text-[color:var(--color-accent-strong)]">
-            {stats.inTransit}
-          </p>
-        </div>
-        <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
-          <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
-            Delivered
-          </p>
-          <p className="mt-4 font-serif text-4xl text-[color:var(--color-accent-strong)]">
-            {stats.delivered}
-          </p>
-        </div>
-        <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
-          <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
-            Active order value
-          </p>
-          <p className="mt-4 font-serif text-3xl text-[color:var(--color-accent-strong)]">
-            {formatNaira(stats.totalRevenue)}
-          </p>
-        </div>
-      </div>
-
-      {error ? (
-        <div className="rounded-[1.5rem] border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-700">
-          {error}
-        </div>
-      ) : null}
-
-      <section className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-[color:var(--color-panel)] p-6 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <p className="section-kicker">Bookings</p>
-            <h2 className="mt-3 font-serif text-2xl text-[color:var(--color-ink)] sm:text-3xl">
-              Customer orders
-            </h2>
-          </div>
-          <Link href="/track" className="button-ghost">
-            Review customer tracking
-          </Link>
-        </div>
-
-        {isLoading ? (
-          <p className="mt-8 text-[color:var(--color-muted)]">Loading orders...</p>
-        ) : orders.length ? (
-          <div className="mt-8 grid gap-4">
-            {orders.map((order) => {
-              const isEditing = editingOrderId === order.id && editForm;
+          <nav className="mt-6 space-y-2">
+            {[
+              { id: "overview", label: "Overview" },
+              { id: "orders", label: "Orders" },
+              { id: "products", label: "Products" },
+              { id: "brand", label: "Brand Settings" },
+            ].map((item) => {
+              const isActive = activeSection === item.id;
 
               return (
-                <article
-                  key={order.id}
-                  className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-5 shadow-sm"
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setActiveSection(item.id as AdminSection)}
+                  className={`w-full rounded-[1.2rem] px-4 py-3 text-left text-sm font-medium transition ${
+                    isActive
+                      ? "bg-[color:var(--color-accent-strong)] text-white shadow-sm"
+                      : "bg-[color:var(--color-panel)] text-[color:var(--color-muted)] hover:bg-[color:var(--color-panel-strong)]"
+                  }`}
                 >
-                  <div className="flex flex-wrap items-start justify-between gap-6">
-                    <div className="flex-1 space-y-3">
-                      <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
-                        {order.trackingId}
-                      </p>
+                  {item.label}
+                </button>
+              );
+            })}
+          </nav>
 
-                      {isEditing ? (
-                        <div className="space-y-4">
-                          <input
-                            value={editForm.customerName}
-                            onChange={(event) =>
-                              setEditForm((current) =>
-                                current
-                                  ? { ...current, customerName: event.target.value }
-                                  : current,
-                              )
-                            }
-                            placeholder="Customer name"
-                            className="input-shell"
-                          />
-                          <input
-                            value={editForm.phone}
-                            onChange={(event) =>
-                              setEditForm((current) =>
-                                current ? { ...current, phone: event.target.value } : current,
-                              )
-                            }
-                            placeholder="Phone number"
-                            className="input-shell"
-                          />
-                          <textarea
-                            rows={3}
-                            value={editForm.address}
-                            onChange={(event) =>
-                              setEditForm((current) =>
-                                current
-                                  ? { ...current, address: event.target.value }
-                                  : current,
-                              )
-                            }
-                            placeholder="Delivery address"
-                            className="input-shell resize-none"
-                          />
-                          <textarea
-                            rows={5}
-                            value={editForm.itemsText}
-                            onChange={(event) =>
-                              setEditForm((current) =>
-                                current
-                                  ? { ...current, itemsText: event.target.value }
-                                  : current,
-                              )
-                            }
-                            placeholder="Product name | Size | Quantity | Unit price"
-                            className="input-shell resize-none"
-                          />
-                          <p className="text-xs leading-6 text-[color:var(--color-muted-soft)]">
-                            Use one line per item: Product name | Size | Quantity |
-                            Unit price
+          <div className="mt-6 space-y-3">
+            <Link href="/track" className="button-ghost w-full">
+              Tracking page
+            </Link>
+            <button type="button" className="button-ghost w-full" onClick={handleSignOut}>
+              Sign out
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <div className="space-y-8">
+        {activeSection === "overview" ? (
+          <>
+            <section className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+              <p className="section-kicker">Overview</p>
+              <h2 className="mt-3 font-serif text-3xl text-[color:var(--color-ink)] sm:text-4xl">
+                Store activity at a glance
+              </h2>
+              <p className="mt-3 max-w-2xl leading-7 text-[color:var(--color-muted)]">
+                See current order movement, active order value, and use the left
+                side panel to jump into the exact admin section you need.
+              </p>
+            </section>
+
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
+                  Total bookings
+                </p>
+                <p className="mt-4 font-serif text-4xl text-[color:var(--color-accent-strong)]">
+                  {stats.bookings}
+                </p>
+              </div>
+              <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
+                  In transit
+                </p>
+                <p className="mt-4 font-serif text-4xl text-[color:var(--color-accent-strong)]">
+                  {stats.inTransit}
+                </p>
+              </div>
+              <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
+                  Delivered
+                </p>
+                <p className="mt-4 font-serif text-4xl text-[color:var(--color-accent-strong)]">
+                  {stats.delivered}
+                </p>
+              </div>
+              <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
+                  Active order value
+                </p>
+                <p className="mt-4 font-serif text-3xl text-[color:var(--color-accent-strong)]">
+                  {formatNaira(stats.totalRevenue)}
+                </p>
+              </div>
+            </div>
+          </>
+        ) : null}
+
+        {error ? (
+          <div className="rounded-[1.5rem] border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-700">
+            {error}
+          </div>
+        ) : null}
+
+        {activeSection === "orders" ? (
+          <section className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-[color:var(--color-panel)] p-6 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="section-kicker">Bookings</p>
+                <h2 className="mt-3 font-serif text-2xl text-[color:var(--color-ink)] sm:text-3xl">
+                  Customer orders
+                </h2>
+              </div>
+              <Link href="/track" className="button-ghost">
+                Review customer tracking
+              </Link>
+            </div>
+
+            {isLoading ? (
+              <p className="mt-8 text-[color:var(--color-muted)]">Loading orders...</p>
+            ) : orders.length ? (
+              <div className="mt-8 grid gap-4">
+                {orders.map((order) => {
+                  return (
+                    <article
+                      key={order.id}
+                      className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-5 shadow-sm"
+                    >
+                      <div className="flex flex-wrap items-start justify-between gap-6">
+                        <div className="flex-1 space-y-3">
+                          <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
+                            {order.trackingId}
                           </p>
-                        </div>
-                      ) : (
-                        <>
-                          <h3 className="font-serif text-2xl text-[color:var(--color-ink)]">
-                            {order.customerName}
-                          </h3>
-                          <p className="text-[color:var(--color-muted)]">
-                            {order.productName} / Qty {order.quantity}
-                          </p>
-                          <p className="text-sm font-medium text-[color:var(--color-accent-strong)]">
-                            {formatNaira(order.totalAmount)}
-                          </p>
-                          <p className="text-sm text-[color:var(--color-muted-soft)]">
-                            {order.phone}
-                          </p>
-                          <p className="max-w-xl text-sm leading-6 text-[color:var(--color-muted)]">
-                            {order.address}
-                          </p>
-                          <div className="rounded-[1.2rem] bg-[color:var(--color-panel)] p-4">
-                            <p className="text-xs uppercase tracking-[0.24em] text-[color:var(--color-muted-soft)]">
-                              Items
+
+                          <>
+                            <h3 className="font-serif text-2xl text-[color:var(--color-ink)]">
+                              {order.customerName}
+                            </h3>
+                            <p className="text-[color:var(--color-muted)]">
+                              {order.productName} / Qty {order.quantity}
                             </p>
-                            <div className="mt-2 space-y-2 text-sm text-[color:var(--color-muted)]">
-                              {order.items.map((item) => (
-                                <p key={`${order.id}-${item.productId}`}>
-                                  {item.productName} ({item.size}) x{item.quantity} /{" "}
-                                  {formatNaira(item.unitPrice)}
-                                </p>
-                              ))}
-                            </div>
-                          </div>
-                          {order.deliveryNote ? (
-                            <div className="rounded-[1.2rem] border border-[color:var(--color-accent-soft)]/16 bg-[color:var(--color-panel)] p-4">
-                              <p className="text-xs uppercase tracking-[0.24em] text-[color:var(--color-muted-soft)]">
-                                Delivery note
-                              </p>
-                              <p className="mt-2 text-sm leading-6 text-[color:var(--color-muted)]">
-                                {order.deliveryNote}
-                              </p>
-                            </div>
-                          ) : null}
-                          {order.orderReceivedConfirmed ? (
                             <p className="text-sm font-medium text-[color:var(--color-accent-strong)]">
-                              Customer marked this order as received.
+                              {formatNaira(order.totalAmount)}
                             </p>
-                          ) : null}
-                        </>
-                      )}
-                    </div>
-
-                    <div className="flex min-w-[15rem] flex-col gap-3">
-                      <label className="text-xs uppercase tracking-[0.25em] text-[color:var(--color-muted-soft)]">
-                        Update status
-                      </label>
-                      <select
-                        value={isEditing ? editForm.status : order.status}
-                        onChange={(event) => {
-                          const nextStatus = event.target.value as OrderStatus;
-
-                          if (isEditing) {
-                            setEditForm((current) =>
-                              current ? { ...current, status: nextStatus } : current,
-                            );
-                            return;
-                          }
-
-                          void handleStatusChange(order.id, nextStatus);
-                        }}
-                        disabled={savingOrderId === order.id}
-                        className="input-shell"
-                      >
-                        {orderStatuses.map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
-                      <p className="text-sm text-[color:var(--color-muted-soft)]">
-                        Last updated{" "}
-                        {new Date(order.updatedAt).toLocaleString("en-US", {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        })}
-                      </p>
-                      <div className="flex flex-col gap-2">
-                        {isEditing ? (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => void handleSaveEdit(order.id)}
-                              disabled={savingOrderId === order.id}
-                              className="button-gold disabled:cursor-not-allowed disabled:opacity-70"
-                            >
-                              {savingOrderId === order.id ? "Saving..." : "Save booking"}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={handleCancelEdit}
-                              className="button-ghost"
-                            >
-                              Cancel edit
-                            </button>
+                            <p className="text-sm text-[color:var(--color-muted-soft)]">
+                              {order.phone}
+                            </p>
+                            <p className="max-w-xl text-sm leading-6 text-[color:var(--color-muted)]">
+                              {order.address}
+                            </p>
+                            <div className="rounded-[1.2rem] bg-[color:var(--color-panel)] p-4">
+                              <p className="text-xs uppercase tracking-[0.24em] text-[color:var(--color-muted-soft)]">
+                                Items
+                              </p>
+                              <div className="mt-2 space-y-2 text-sm text-[color:var(--color-muted)]">
+                                {order.items.map((item) => (
+                                  <p key={`${order.id}-${item.productId}`}>
+                                    {item.productName} ({item.size}) x{item.quantity} /{" "}
+                                    {formatNaira(item.unitPrice)}
+                                  </p>
+                                ))}
+                              </div>
+                            </div>
+                            {order.deliveryNote ? (
+                              <div className="rounded-[1.2rem] border border-[color:var(--color-accent-soft)]/16 bg-[color:var(--color-panel)] p-4">
+                                <p className="text-xs uppercase tracking-[0.24em] text-[color:var(--color-muted-soft)]">
+                                  Delivery note
+                                </p>
+                                <p className="mt-2 text-sm leading-6 text-[color:var(--color-muted)]">
+                                  {order.deliveryNote}
+                                </p>
+                              </div>
+                            ) : null}
+                            {order.orderReceivedConfirmed ? (
+                              <p className="text-sm font-medium text-[color:var(--color-accent-strong)]">
+                                Customer marked this order as received.
+                              </p>
+                            ) : null}
                           </>
-                        ) : (
-                          <>
+                        </div>
+
+                        <div className="flex min-w-[15rem] flex-col gap-3">
+                          <label className="text-xs uppercase tracking-[0.25em] text-[color:var(--color-muted-soft)]">
+                            Update status
+                          </label>
+                          <select
+                            value={order.status}
+                            onChange={(event) => {
+                              const nextStatus = event.target.value as OrderStatus;
+                              void handleStatusChange(order.id, nextStatus);
+                            }}
+                            disabled={savingOrderId === order.id}
+                            className="input-shell"
+                          >
+                            {orderStatuses.map((status) => (
+                              <option key={status} value={status}>
+                                {status}
+                              </option>
+                            ))}
+                          </select>
+                          <p className="text-sm text-[color:var(--color-muted-soft)]">
+                            Last updated{" "}
+                            {new Date(order.updatedAt).toLocaleString("en-US", {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
+                          </p>
+                          <div className="flex flex-col gap-2">
                             <button
                               type="button"
                               onClick={() => handleStartEdit(order)}
@@ -509,21 +477,123 @@ export function AdminDashboard() {
                             >
                               Delete booking
                             </button>
-                          </>
-                        )}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="mt-8 text-[color:var(--color-muted)]">No orders yet.</p>
-        )}
-      </section>
+                    </article>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="mt-8 text-[color:var(--color-muted)]">No orders yet.</p>
+            )}
+          </section>
+        ) : null}
 
-      <ProductManagement />
+        {activeSection === "products" ? <ProductManagement /> : null}
+        {activeSection === "brand" ? <BrandSettingsPanel /> : null}
+      </div>
+
+      {isOrderDialogOpen && editForm && editingOrderId ? (
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-[rgba(31,26,36,0.42)] px-4 py-10 backdrop-blur-sm">
+          <div className="w-full max-w-4xl rounded-[2rem] border border-[color:var(--color-accent-soft)]/18 bg-white p-6 shadow-2xl sm:p-8">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p className="section-kicker">Booking Form</p>
+                <h3 className="mt-2 font-serif text-3xl text-[color:var(--color-ink)]">
+                  Edit booking
+                </h3>
+              </div>
+              <button
+                type="button"
+                className="button-ghost"
+                onClick={handleCancelEdit}
+              >
+                Close
+              </button>
+            </div>
+            <div className="mt-8 space-y-4">
+              <input
+                value={editForm.customerName}
+                onChange={(event) =>
+                  setEditForm((current) =>
+                    current ? { ...current, customerName: event.target.value } : current,
+                  )
+                }
+                placeholder="Customer name"
+                className="input-shell"
+              />
+              <input
+                value={editForm.phone}
+                onChange={(event) =>
+                  setEditForm((current) =>
+                    current ? { ...current, phone: event.target.value } : current,
+                  )
+                }
+                placeholder="Phone number"
+                className="input-shell"
+              />
+              <textarea
+                rows={3}
+                value={editForm.address}
+                onChange={(event) =>
+                  setEditForm((current) =>
+                    current ? { ...current, address: event.target.value } : current,
+                  )
+                }
+                placeholder="Delivery address"
+                className="input-shell resize-none"
+              />
+              <select
+                value={editForm.status}
+                onChange={(event) =>
+                  setEditForm((current) =>
+                    current ? { ...current, status: event.target.value as OrderStatus } : current,
+                  )
+                }
+                className="input-shell"
+              >
+                {orderStatuses.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+              <textarea
+                rows={6}
+                value={editForm.itemsText}
+                onChange={(event) =>
+                  setEditForm((current) =>
+                    current ? { ...current, itemsText: event.target.value } : current,
+                  )
+                }
+                placeholder="Product name | Size | Quantity | Unit price"
+                className="input-shell resize-none"
+              />
+              <p className="text-xs leading-6 text-[color:var(--color-muted-soft)]">
+                Use one line per item: Product name | Size | Quantity | Unit price
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => void handleSaveEdit(editingOrderId)}
+                  disabled={savingOrderId === editingOrderId}
+                  className="button-gold disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {savingOrderId === editingOrderId ? "Saving..." : "Save booking"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="button-ghost"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

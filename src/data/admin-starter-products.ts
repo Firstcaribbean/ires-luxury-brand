@@ -1,7 +1,8 @@
-import type { ProductInput } from "@/lib/products/repository";
+import type { Perfume } from "@/data/perfumes";
 
-export const adminStarterProducts: ProductInput[] = [
+export const adminStarterProducts: Perfume[] = [
   {
+    id: "starter-001",
     slug: "khadlaj-oud-noir",
     name: "Khadlaj Oud Noir",
     tagline: "Dark oud polished with gold and smoke.",
@@ -20,6 +21,7 @@ export const adminStarterProducts: ProductInput[] = [
     heroAccent: "rgba(91, 71, 56, 0.20)",
   },
   {
+    id: "starter-002",
     slug: "rave-now",
     name: "Rave Now",
     tagline: "Modern black bottle with a bright, clean lift.",
@@ -38,6 +40,7 @@ export const adminStarterProducts: ProductInput[] = [
     heroAccent: "rgba(79, 86, 109, 0.18)",
   },
   {
+    id: "starter-003",
     slug: "armaf-club-de-nuit-man-limited-edition",
     name: "Armaf Club de Nuit Man Limited Edition",
     tagline: "Collector energy with signature smoky citrus.",
@@ -56,6 +59,7 @@ export const adminStarterProducts: ProductInput[] = [
     heroAccent: "rgba(69, 69, 74, 0.18)",
   },
   {
+    id: "starter-004",
     slug: "lattafa-ishq-al-shuyukh-gold",
     name: "Lattafa Ishq Al Shuyukh Gold",
     tagline: "Sweet leather warmth with a caramel edge.",
@@ -74,6 +78,7 @@ export const adminStarterProducts: ProductInput[] = [
     heroAccent: "rgba(158, 121, 57, 0.20)",
   },
   {
+    id: "starter-005",
     slug: "rich-and-royal",
     name: "Rich & Royal",
     tagline: "A clean royal profile with soft floral depth.",
@@ -92,6 +97,7 @@ export const adminStarterProducts: ProductInput[] = [
     heroAccent: "rgba(124, 131, 143, 0.18)",
   },
   {
+    id: "starter-006",
     slug: "lattafa-sherif",
     name: "Lattafa Sherif",
     tagline: "A statement bottle with a smooth, expressive trail.",
@@ -110,6 +116,7 @@ export const adminStarterProducts: ProductInput[] = [
     heroAccent: "rgba(70, 88, 77, 0.18)",
   },
   {
+    id: "starter-007",
     slug: "riiffs-momento-extrait-de-parfum",
     name: "Riiffs Momento Extrait de Parfum",
     tagline: "Dark packaging, warm extrait concentration.",
@@ -128,6 +135,7 @@ export const adminStarterProducts: ProductInput[] = [
     heroAccent: "rgba(100, 78, 61, 0.18)",
   },
   {
+    id: "starter-008",
     slug: "armaf-club-de-nuit-intense-man",
     name: "Armaf Club de Nuit Intense Man",
     tagline: "The popular smoky citrus classic.",
@@ -146,6 +154,7 @@ export const adminStarterProducts: ProductInput[] = [
     heroAccent: "rgba(54, 54, 59, 0.18)",
   },
   {
+    id: "starter-009",
     slug: "lattafa-musamam-black-intense",
     name: "Lattafa Musamam Black Intense",
     tagline: "Incense smoke with a dark polished finish.",
@@ -164,6 +173,7 @@ export const adminStarterProducts: ProductInput[] = [
     heroAccent: "rgba(51, 57, 63, 0.22)",
   },
   {
+    id: "starter-010",
     slug: "lattafa-opulent-dubai",
     name: "Lattafa Opulent Dubai",
     tagline: "Golden sweetness with a bright luxury aura.",
