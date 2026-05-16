@@ -321,9 +321,150 @@ select {
   animation-delay: 1.2s;
 }
 
+.hero-ripple {
+  position: absolute;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 94, 169, 0.14);
+  animation: ripplePulse 6.5s ease-in-out infinite;
+}
+
+.hero-ripple-one {
+  height: 22rem;
+  width: 22rem;
+}
+
+.hero-ripple-two {
+  height: 29rem;
+  width: 29rem;
+  animation-delay: 1.4s;
+}
+
+.showcase-orbit-card {
+  position: absolute;
+  width: min(15rem, 34vw);
+  border-radius: 1.6rem;
+  border: 1px solid rgba(223, 45, 128, 0.16);
+  background: rgba(255, 255, 255, 0.84);
+  padding: 1rem 1.15rem;
+  box-shadow: 0 22px 55px rgba(223, 45, 128, 0.14);
+  backdrop-filter: blur(14px);
+  animation: orbitCardBob 6.5s ease-in-out infinite;
+}
+
+.showcase-orbit-card-left {
+  left: -1.75rem;
+  bottom: 2rem;
+}
+
+.showcase-orbit-card-top {
+  right: -0.5rem;
+  top: 2rem;
+  animation-delay: 1.1s;
+}
+
+.showcase-orbit-card-right {
+  right: -2rem;
+  bottom: 4rem;
+  animation-delay: 2.1s;
+}
+
+.showcase-orbit-dot {
+  display: inline-flex;
+  height: 0.8rem;
+  width: 0.8rem;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 6px rgba(255, 94, 169, 0.08);
+}
+
+.marquee-shell {
+  overflow: hidden;
+  border-radius: 9999px;
+  border: 1px solid rgba(223, 45, 128, 0.14);
+  background: rgba(255, 255, 255, 0.78);
+  padding: 0.85rem 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeMove 24s linear infinite;
+}
+
+.marquee-pill {
+  margin-right: 0.9rem;
+  white-space: nowrap;
+  border-radius: 9999px;
+  background: var(--color-panel);
+  padding: 0.65rem 1rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent-strong);
+}
+
+.dashboard-glow-card::after {
+  content: "";
+  position: absolute;
+  right: -2rem;
+  top: -2rem;
+  height: 10rem;
+  width: 10rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 94, 169, 0.18), transparent 70%);
+  animation: driftCard 7s ease-in-out infinite;
+}
+
+.dashboard-spark-bar {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dashboard-spark-bar span {
+  display: block;
+  height: 0.4rem;
+  flex: 1;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, var(--color-accent-soft), rgba(255, 94, 169, 0.18));
+  animation: dashboardSpark 2.2s ease-in-out infinite;
+}
+
+.dashboard-spark-bar span:nth-child(2) {
+  animation-delay: 0.25s;
+}
+
+.dashboard-spark-bar span:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+.stat-pulse-dot {
+  display: inline-flex;
+  height: 0.7rem;
+  width: 0.7rem;
+  border-radius: 9999px;
+  background: var(--color-accent-soft);
+  box-shadow: 0 0 0 0 rgba(255, 94, 169, 0.35);
+  animation: statPulse 2.4s ease-out infinite;
+}
+
 @media (max-width: 1023px) {
   .floating-scent-card {
     display: none;
+  }
+
+  .showcase-orbit-card {
+    position: static;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .hero-ripple {
+    display: none;
+  }
+
+  .marquee-track {
+    animation-duration: 18s;
   }
 }
 
@@ -346,6 +487,17 @@ select {
 
   50% {
     transform: translate3d(0, -10px, 0);
+  }
+}
+
+@keyframes orbitCardBob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate3d(0, -12px, 0) rotate(0.8deg);
   }
 }
 
@@ -392,5 +544,55 @@ select {
 
   50% {
     filter: drop-shadow(0 28px 65px rgba(223, 45, 128, 0.18));
+  }
+}
+
+@keyframes ripplePulse {
+  0%,
+  100% {
+    transform: scale(0.96);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1.04);
+    opacity: 0.85;
+  }
+}
+
+@keyframes marqueeMove {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes dashboardSpark {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scaleX(0.84);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes statPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 94, 169, 0.35);
+  }
+
+  70% {
+    box-shadow: 0 0 0 12px rgba(255, 94, 169, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 94, 169, 0);
   }
 }

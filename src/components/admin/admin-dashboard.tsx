@@ -296,7 +296,7 @@ export function AdminDashboard() {
       <div className="space-y-8">
         {activeSection === "overview" ? (
           <>
-            <section className="reveal-rise relative overflow-hidden rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+            <section className="dashboard-glow-card reveal-rise relative overflow-hidden rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
               <div className="card-sheen" />
               <p className="section-kicker">Overview</p>
               <h2 className="mt-3 font-serif text-3xl text-[color:var(--color-ink)] sm:text-4xl">
@@ -306,10 +306,16 @@ export function AdminDashboard() {
                 See current order movement, active order value, and use the left
                 side panel to jump into the exact admin section you need.
               </p>
+              <div className="dashboard-spark-bar mt-6">
+                <span />
+                <span />
+                <span />
+              </div>
             </section>
 
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
               <div className="reveal-rise hover-lift-soft rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm [animation-delay:90ms]">
+                <span className="stat-pulse-dot" />
                 <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
                   Total bookings
                 </p>
@@ -318,6 +324,7 @@ export function AdminDashboard() {
                 </p>
               </div>
               <div className="reveal-rise hover-lift-soft rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm [animation-delay:150ms]">
+                <span className="stat-pulse-dot" />
                 <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
                   In transit
                 </p>
@@ -326,6 +333,7 @@ export function AdminDashboard() {
                 </p>
               </div>
               <div className="reveal-rise hover-lift-soft rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm [animation-delay:210ms]">
+                <span className="stat-pulse-dot" />
                 <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
                   Delivered
                 </p>
@@ -334,6 +342,7 @@ export function AdminDashboard() {
                 </p>
               </div>
               <div className="reveal-rise hover-lift-soft rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm [animation-delay:270ms]">
+                <span className="stat-pulse-dot" />
                 <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
                   Active order value
                 </p>

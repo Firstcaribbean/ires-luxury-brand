@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { adminStarterProducts } from "@/data/admin-starter-products";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { ProductsGrid } from "@/components/products/products-grid";
@@ -42,6 +43,16 @@ const orderFlow = [
   "Open the cart, enter delivery details, and save the booking on the website.",
   "Use the WhatsApp button to message the vendor and complete payment.",
   "Track the order status later and confirm delivery with a note once it arrives.",
+];
+
+const heroShowcase = adminStarterProducts.slice(0, 3);
+const movingHighlights = [
+  "Luxury perfume picks",
+  "Cart before WhatsApp",
+  "Naira pricing",
+  "Editable vendor catalog",
+  "Classic feminine layout",
+  "Track orders online",
 ];
 
 export default function Home() {
@@ -98,9 +109,11 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative flex items-center justify-center">
+            <div className="relative flex items-center justify-center lg:justify-end">
               <div className="ambient-orb ambient-orb-left" />
               <div className="ambient-orb ambient-orb-right" />
+              <div className="hero-ripple hero-ripple-one" />
+              <div className="hero-ripple hero-ripple-two" />
               <div className="hero-bottle-shell reveal-rise [animation-delay:180ms]">
                 <div className="hero-bottle-cap" />
                 <div className="hero-bottle-glass">
@@ -119,23 +132,47 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="floating-scent-card floating-scent-card-left reveal-rise [animation-delay:260ms]">
-                <p className="section-kicker">Featured Mood</p>
-                <p className="mt-3 font-serif text-2xl text-[color:var(--color-ink)]">
-                  Soft luxury
-                </p>
-                <p className="mt-2 text-sm leading-6 text-[color:var(--color-muted)]">
-                  Feminine, polished, bright, and easy to browse.
-                </p>
-              </div>
-              <div className="floating-scent-card floating-scent-card-right reveal-rise [animation-delay:360ms]">
-                <p className="section-kicker">Now Live</p>
-                <p className="mt-3 font-serif text-2xl text-[color:var(--color-ink)]">
-                  Cart to WhatsApp
-                </p>
-                <p className="mt-2 text-sm leading-6 text-[color:var(--color-muted)]">
-                  Save the order first, then message the vendor for payment.
-                </p>
+              {heroShowcase.map((product, index) => (
+                <div
+                  key={product.slug}
+                  className={`showcase-orbit-card reveal-rise ${
+                    index === 0
+                      ? "showcase-orbit-card-left"
+                      : index === 1
+                        ? "showcase-orbit-card-top"
+                        : "showcase-orbit-card-right"
+                  }`}
+                  style={{ animationDelay: `${260 + index * 90}ms` }}
+                >
+                  <span
+                    className="showcase-orbit-dot"
+                    style={{ background: product.heroAccent }}
+                  />
+                  <p className="section-kicker">{product.fragranceFamily}</p>
+                  <p className="mt-3 font-serif text-xl text-[color:var(--color-ink)]">
+                    {product.name}
+                  </p>
+                  <p className="mt-2 text-sm text-[color:var(--color-muted-soft)]">
+                    {product.size}
+                  </p>
+                  <p className="mt-3 font-serif text-2xl text-[color:var(--color-accent-strong)]">
+                    ₦{product.price.toLocaleString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-[color:var(--color-accent-soft)]/14 bg-white/60">
+          <div className="mx-auto w-full max-w-7xl px-6 py-5 lg:px-10">
+            <div className="marquee-shell">
+              <div className="marquee-track">
+                {[...movingHighlights, ...movingHighlights].map((item, index) => (
+                  <span key={`${item}-${index}`} className="marquee-pill">
+                    {item}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
