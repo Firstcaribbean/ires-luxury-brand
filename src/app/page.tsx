@@ -53,7 +53,7 @@ export default function Home() {
           <div className="noise-overlay" />
           <div className="mx-auto grid min-h-[calc(100vh-81px)] w-full max-w-7xl gap-14 px-6 py-14 lg:grid-cols-[1fr_0.9fr] lg:px-10 lg:py-20">
             <div className="flex flex-col justify-center gap-8">
-              <div className="space-y-5">
+              <div className="reveal-rise space-y-5">
                 <BrandLogo hero />
                 <p className="section-kicker">Luxury Perfume Shopping</p>
                 <h1 className="max-w-3xl font-serif text-4xl leading-tight text-[color:var(--color-ink)] sm:text-5xl lg:text-6xl">
@@ -67,7 +67,7 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-4">
+              <div className="reveal-rise flex flex-wrap gap-4 [animation-delay:120ms]">
                 <Link href="/products" className="button-gold">
                   Explore the collection
                 </Link>
@@ -80,8 +80,10 @@ export default function Home() {
                 {scrollScenes.map((scene, index) => (
                   <div
                     key={scene.title}
-                    className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-5 shadow-sm"
+                    className="reveal-rise hover-lift-soft relative overflow-hidden rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-5 shadow-sm"
+                    style={{ animationDelay: `${180 + index * 100}ms` }}
                   >
+                    <div className="card-sheen" />
                     <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--color-muted-soft)]">
                       0{index + 1}
                     </p>
@@ -99,7 +101,7 @@ export default function Home() {
             <div className="relative flex items-center justify-center">
               <div className="ambient-orb ambient-orb-left" />
               <div className="ambient-orb ambient-orb-right" />
-              <div className="hero-bottle-shell">
+              <div className="hero-bottle-shell reveal-rise [animation-delay:180ms]">
                 <div className="hero-bottle-cap" />
                 <div className="hero-bottle-glass">
                   <div className="hero-bottle-reflection" />
@@ -117,13 +119,31 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+              <div className="floating-scent-card floating-scent-card-left reveal-rise [animation-delay:260ms]">
+                <p className="section-kicker">Featured Mood</p>
+                <p className="mt-3 font-serif text-2xl text-[color:var(--color-ink)]">
+                  Soft luxury
+                </p>
+                <p className="mt-2 text-sm leading-6 text-[color:var(--color-muted)]">
+                  Feminine, polished, bright, and easy to browse.
+                </p>
+              </div>
+              <div className="floating-scent-card floating-scent-card-right reveal-rise [animation-delay:360ms]">
+                <p className="section-kicker">Now Live</p>
+                <p className="mt-3 font-serif text-2xl text-[color:var(--color-ink)]">
+                  Cart to WhatsApp
+                </p>
+                <p className="mt-2 text-sm leading-6 text-[color:var(--color-muted)]">
+                  Save the order first, then message the vendor for payment.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
         <section className="border-b border-[color:var(--color-accent-soft)]/14">
           <div className="mx-auto grid w-full max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[0.84fr_1.16fr] lg:px-10">
-            <div className="lg:sticky lg:top-28 lg:self-start">
+            <div className="reveal-rise lg:sticky lg:top-28 lg:self-start">
               <SectionHeading
                 eyebrow="Brand Story"
                 title="A lighter boutique direction that still feels premium."
@@ -131,7 +151,8 @@ export default function Home() {
               />
             </div>
             <div className="grid gap-6">
-              <div className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-8 shadow-sm">
+              <div className="reveal-rise hover-lift-soft relative overflow-hidden rounded-[2rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-8 shadow-sm [animation-delay:120ms]">
+                <div className="card-sheen" />
                 <p className="section-kicker">Editorial Layout</p>
                 <p className="mt-4 max-w-2xl text-xl leading-9 text-[color:var(--color-ink)] sm:text-2xl">
                   Clean spacing, readable typography, and soft glass-like panels
@@ -140,14 +161,14 @@ export default function Home() {
                 </p>
               </div>
               <div className="grid gap-6 md:grid-cols-2">
-                <div className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/14 bg-[color:var(--color-panel)] p-6 shadow-sm">
+                <div className="reveal-rise hover-lift-soft rounded-[2rem] border border-[color:var(--color-accent-soft)]/14 bg-[color:var(--color-panel)] p-6 shadow-sm [animation-delay:180ms]">
                   <p className="section-kicker">Shopping Flow</p>
                   <p className="mt-4 leading-7 text-[color:var(--color-muted)]">
                     Instead of booking one product at a time, customers can now
                     collect their choices first, then save one order at checkout.
                   </p>
                 </div>
-                <div className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/14 bg-[color:var(--color-panel)] p-6 shadow-sm">
+                <div className="reveal-rise hover-lift-soft rounded-[2rem] border border-[color:var(--color-accent-soft)]/14 bg-[color:var(--color-panel)] p-6 shadow-sm [animation-delay:260ms]">
                   <p className="section-kicker">Readable Design</p>
                   <p className="mt-4 leading-7 text-[color:var(--color-muted)]">
                     The font sizes are calmer at normal zoom and still scale
@@ -161,18 +182,22 @@ export default function Home() {
 
         <section className="border-b border-[color:var(--color-accent-soft)]/14">
           <div className="mx-auto w-full max-w-7xl px-6 py-20 lg:px-10">
-            <SectionHeading
+            <div className="reveal-rise">
+              <SectionHeading
               eyebrow="Fragrance Architecture"
               title="Each scent still tells a story in clear, elegant layers."
               body="The homepage keeps the product-storytelling idea, but with softer contrast and easier reading across desktop and mobile."
               align="center"
             />
+            </div>
             <div className="mt-12 grid gap-6 md:grid-cols-3">
               {fragranceLayers.map((layer, index) => (
                 <article
                   key={layer.label}
-                  className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-6 shadow-sm"
+                  className="reveal-rise hover-lift-soft relative overflow-hidden rounded-[2rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-6 shadow-sm"
+                  style={{ animationDelay: `${120 + index * 110}ms` }}
                 >
+                  <div className="card-sheen" />
                   <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--color-muted-soft)]">
                     Layer 0{index + 1}
                   </p>
@@ -190,11 +215,13 @@ export default function Home() {
 
         <section className="border-b border-[color:var(--color-accent-soft)]/14">
           <div className="mx-auto w-full max-w-7xl px-6 py-20 lg:px-10">
-            <SectionHeading
+            <div className="reveal-rise">
+              <SectionHeading
               eyebrow="Signature Collection"
               title="Shop the perfumes, add favorites, and continue when ready."
               body="Every product card now supports the cart flow so customers can browse multiple scents before they book and pay, while the admin can manage products from the vendor panel."
             />
+            </div>
             <div className="mt-12">
               <ProductsGrid />
             </div>
@@ -204,17 +231,21 @@ export default function Home() {
         <section className="border-b border-[color:var(--color-accent-soft)]/14">
           <div className="mx-auto w-full max-w-7xl px-6 py-20 lg:px-10">
             <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr]">
-              <SectionHeading
+              <div className="reveal-rise">
+                <SectionHeading
                 eyebrow="Service Journey"
                 title="The business flow is now simpler and more practical."
                 body="Customers can shop first, save later, and only move to WhatsApp once the full order is already recorded on the website."
               />
+              </div>
               <div className="space-y-4">
                 {orderFlow.map((step, index) => (
                   <div
                     key={step}
-                    className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-5 shadow-sm"
+                    className="reveal-rise hover-lift-soft relative overflow-hidden rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/14 bg-white p-5 shadow-sm"
+                    style={{ animationDelay: `${120 + index * 95}ms` }}
                   >
+                    <div className="card-sheen" />
                     <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--color-muted-soft)]">
                       Step 0{index + 1}
                     </p>
@@ -229,7 +260,8 @@ export default function Home() {
         </section>
 
         <section className="mx-auto w-full max-w-7xl px-6 py-20 lg:px-10">
-          <div className="rounded-[2.25rem] border border-[color:var(--color-accent-soft)]/18 bg-[linear-gradient(135deg,#fff8fb,#fff0f7)] p-8 shadow-sm sm:p-10">
+          <div className="reveal-rise hover-lift-soft relative overflow-hidden rounded-[2.25rem] border border-[color:var(--color-accent-soft)]/18 bg-[linear-gradient(135deg,#fff8fb,#fff0f7)] p-8 shadow-sm sm:p-10">
+            <div className="card-sheen" />
             <p className="section-kicker">Ready To Use</p>
             <h2 className="mt-4 max-w-3xl font-serif text-3xl leading-tight text-[color:var(--color-ink)] sm:text-4xl">
               The store now supports lighter branding, naira pricing, cart

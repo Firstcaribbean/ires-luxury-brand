@@ -246,7 +246,7 @@ export function AdminDashboard() {
   return (
     <div className="grid gap-8 xl:grid-cols-[18rem_minmax(0,1fr)]">
       <aside className="xl:sticky xl:top-6 xl:self-start">
-        <div className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-5 shadow-sm">
+        <div className="reveal-rise rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-5 shadow-sm">
           <p className="section-kicker">Vendor Dashboard</p>
           <h1 className="mt-3 font-serif text-3xl text-[color:var(--color-ink)]">
             Admin workspace
@@ -272,8 +272,8 @@ export function AdminDashboard() {
                   onClick={() => setActiveSection(item.id as AdminSection)}
                   className={`w-full rounded-[1.2rem] px-4 py-3 text-left text-sm font-medium transition ${
                     isActive
-                      ? "bg-[color:var(--color-accent-strong)] text-white shadow-sm"
-                      : "bg-[color:var(--color-panel)] text-[color:var(--color-muted)] hover:bg-[color:var(--color-panel-strong)]"
+                      ? "bg-[color:var(--color-accent-strong)] text-white shadow-sm shadow-[0_18px_34px_rgba(223,45,128,0.18)]"
+                      : "bg-[color:var(--color-panel)] text-[color:var(--color-muted)] hover:bg-[color:var(--color-panel-strong)] hover:-translate-y-0.5"
                   }`}
                 >
                   {item.label}
@@ -296,7 +296,8 @@ export function AdminDashboard() {
       <div className="space-y-8">
         {activeSection === "overview" ? (
           <>
-            <section className="rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+            <section className="reveal-rise relative overflow-hidden rounded-[2rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+              <div className="card-sheen" />
               <p className="section-kicker">Overview</p>
               <h2 className="mt-3 font-serif text-3xl text-[color:var(--color-ink)] sm:text-4xl">
                 Store activity at a glance
@@ -308,7 +309,7 @@ export function AdminDashboard() {
             </section>
 
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-              <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+              <div className="reveal-rise hover-lift-soft rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm [animation-delay:90ms]">
                 <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
                   Total bookings
                 </p>
@@ -316,7 +317,7 @@ export function AdminDashboard() {
                   {stats.bookings}
                 </p>
               </div>
-              <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+              <div className="reveal-rise hover-lift-soft rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm [animation-delay:150ms]">
                 <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
                   In transit
                 </p>
@@ -324,7 +325,7 @@ export function AdminDashboard() {
                   {stats.inTransit}
                 </p>
               </div>
-              <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+              <div className="reveal-rise hover-lift-soft rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm [animation-delay:210ms]">
                 <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
                   Delivered
                 </p>
@@ -332,7 +333,7 @@ export function AdminDashboard() {
                   {stats.delivered}
                 </p>
               </div>
-              <div className="rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm">
+              <div className="reveal-rise hover-lift-soft rounded-[1.75rem] border border-[color:var(--color-accent-soft)]/16 bg-white p-6 shadow-sm [animation-delay:270ms]">
                 <p className="text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted-soft)]">
                   Active order value
                 </p>

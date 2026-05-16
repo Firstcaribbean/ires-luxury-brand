@@ -15,7 +15,17 @@ const navItems = [
   { href: "/confirm-delivery", label: "Confirm Delivery" },
 ];
 
-export function SiteHeader() {
+type SiteHeaderProps = {
+  showNavigation?: boolean;
+  showActions?: boolean;
+  adminLabel?: string;
+};
+
+export function SiteHeader({
+  showNavigation = true,
+  showActions = true,
+  adminLabel,
+}: SiteHeaderProps) {
   const [accountLabel, setAccountLabel] = useState("Account");
   const [accountHref, setAccountHref] = useState("/account/login");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -44,63 +54,94 @@ export function SiteHeader() {
           <BrandLogo compact />
         </Link>
 
-        <nav className="hidden items-center gap-6 text-sm text-[color:var(--color-muted)] md:flex">
-          {navItems.map((item) => (
+        {showNavigation ? (
+          <nav className="hidden items-center gap-6 text-sm text-[color:var(--color-muted)] md:flex">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="transition hover:text-[color:var(--color-accent-strong)]"
+              >
+                {item.label}
+              </Link>
+            ))}
             <Link
-              key={item.href}
-              href={item.href}
+              href={accountHref}
               className="transition hover:text-[color:var(--color-accent-strong)]"
             >
-              {item.label}
+              {accountLabel}
             </Link>
-          ))}
-          <Link
-            href={accountHref}
-            className="transition hover:text-[color:var(--color-accent-strong)]"
-          >
-            {accountLabel}
-          </Link>
-        </nav>
-
-        <div className="hidden items-center gap-3 md:flex">
-          <Link href={accountHref} className="button-ghost">
-            {accountLabel}
-          </Link>
-          <CartLink />
-        </div>
-
-        <div className="flex items-center gap-2 md:hidden">
-          <Link
-            href={accountHref}
-            className="inline-flex items-center rounded-full border border-[color:var(--color-accent-soft)]/30 px-3 py-2 text-xs font-medium uppercase tracking-[0.16em] text-[color:var(--color-accent-strong)]"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Account
-          </Link>
-          <Link
-            href="/cart"
-            className="inline-flex items-center rounded-full border border-[color:var(--color-accent-soft)]/30 px-3 py-2 text-xs font-medium uppercase tracking-[0.16em] text-[color:var(--color-accent-strong)]"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Cart
-          </Link>
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen((current) => !current)}
-            aria-expanded={mobileMenuOpen}
-            aria-label="Toggle menu"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--color-accent-soft)]/30 text-[color:var(--color-accent-strong)]"
-          >
-            <span className="flex flex-col gap-1">
-              <span className="h-0.5 w-4 bg-current" />
-              <span className="h-0.5 w-4 bg-current" />
-              <span className="h-0.5 w-4 bg-current" />
+          </nav>
+        ) : adminLabel ? (
+          <div className="hidden md:flex">
+            <span className="rounded-full border border-[color:var(--color-accent-soft)]/22 bg-[color:var(--color-panel)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-[color:var(--color-accent-strong)]">
+              {adminLabel}
             </span>
-          </button>
-        </div>
+          </div>
+        ) : null}
+
+        {showActions ? (
+          <div className="hidden items-center gap-3 md:flex">
+            <Link href={accountHref} className="button-ghost">
+              {accountLabel}
+            </Link>
+            <CartLink />
+          </div>
+        ) : adminLabel ? (
+          <div className="hidden md:flex">
+            <Link href="/" className="button-ghost">
+              Back to store
+            </Link>
+          </div>
+        ) : null}
+
+        {showNavigation || showActions ? (
+          <div className="flex items-center gap-2 md:hidden">
+            {showActions ? (
+              <>
+                <Link
+                  href={accountHref}
+                  className="inline-flex items-center rounded-full border border-[color:var(--color-accent-soft)]/30 px-3 py-2 text-xs font-medium uppercase tracking-[0.16em] text-[color:var(--color-accent-strong)]"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Account
+                </Link>
+                <Link
+                  href="/cart"
+                  className="inline-flex items-center rounded-full border border-[color:var(--color-accent-soft)]/30 px-3 py-2 text-xs font-medium uppercase tracking-[0.16em] text-[color:var(--color-accent-strong)]"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Cart
+                </Link>
+              </>
+            ) : adminLabel ? (
+              <Link
+                href="/"
+                className="inline-flex items-center rounded-full border border-[color:var(--color-accent-soft)]/30 px-3 py-2 text-xs font-medium uppercase tracking-[0.16em] text-[color:var(--color-accent-strong)]"
+              >
+                Store
+              </Link>
+            ) : null}
+            {showNavigation ? (
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen((current) => !current)}
+                aria-expanded={mobileMenuOpen}
+                aria-label="Toggle menu"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--color-accent-soft)]/30 text-[color:var(--color-accent-strong)]"
+              >
+                <span className="flex flex-col gap-1">
+                  <span className="h-0.5 w-4 bg-current" />
+                  <span className="h-0.5 w-4 bg-current" />
+                  <span className="h-0.5 w-4 bg-current" />
+                </span>
+              </button>
+            ) : null}
+          </div>
+        ) : null}
       </div>
 
-      {mobileMenuOpen ? (
+      {showNavigation && mobileMenuOpen ? (
         <div className="border-t border-[color:var(--color-accent-soft)]/15 bg-white px-4 py-4 md:hidden">
           <nav className="grid gap-2">
             {navItems.map((item) => (

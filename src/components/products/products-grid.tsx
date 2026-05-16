@@ -59,8 +59,8 @@ export function ProductsGrid() {
 
   return (
     <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
-      {products.map((perfume) => (
-        <PerfumeCard key={perfume.id} perfume={perfume} />
+      {products.map((perfume, index) => (
+        <PerfumeCard key={perfume.id} perfume={perfume} index={index} />
       ))}
     </div>
   );

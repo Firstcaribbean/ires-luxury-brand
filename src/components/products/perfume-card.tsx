@@ -6,13 +6,18 @@ import { formatNaira } from "@/lib/currency";
 
 type PerfumeCardProps = {
   perfume: Perfume;
+  index?: number;
 };
 
-export function PerfumeCard({ perfume }: PerfumeCardProps) {
+export function PerfumeCard({ perfume, index = 0 }: PerfumeCardProps) {
   const hasImage = Boolean(perfume.imageUrl.trim());
 
   return (
-    <article className="group relative overflow-hidden rounded-[1.5rem] border border-[color:var(--color-accent-soft)]/15 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[color:var(--color-accent-soft)]/45">
+    <article
+      className="group reveal-rise hover-lift-soft relative overflow-hidden rounded-[1.5rem] border border-[color:var(--color-accent-soft)]/15 bg-white p-4 shadow-sm transition duration-300 hover:border-[color:var(--color-accent-soft)]/45"
+      style={{ animationDelay: `${index * 90}ms` }}
+    >
+      <div className="card-sheen" />
       <div
         className="pointer-events-none absolute inset-x-8 top-4 h-24 rounded-full blur-3xl"
         style={{
@@ -21,7 +26,7 @@ export function PerfumeCard({ perfume }: PerfumeCardProps) {
       />
       <div className="relative flex min-h-[12.5rem] flex-col justify-between gap-4">
         <div className="grid gap-4 sm:grid-cols-[6.5rem_1fr] sm:items-start">
-          <div className="overflow-hidden rounded-[1.15rem] bg-[color:var(--color-panel)]">
+          <div className="overflow-hidden rounded-[1.15rem] bg-[color:var(--color-panel)] shadow-[0_12px_30px_rgba(223,45,128,0.08)]">
             {hasImage ? (
               <img
                 src={perfume.imageUrl}

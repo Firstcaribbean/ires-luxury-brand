@@ -136,6 +136,40 @@ select {
   color: var(--color-ink);
 }
 
+.reveal-rise {
+  opacity: 0;
+  animation: revealRise 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.hover-lift-soft {
+  transition:
+    transform 240ms ease,
+    box-shadow 240ms ease,
+    border-color 240ms ease;
+}
+
+.hover-lift-soft:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 48px rgba(223, 45, 128, 0.12);
+}
+
+.card-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.62) 50%,
+    transparent 58%,
+    transparent 100%
+  );
+  transform: translateX(-120%);
+  animation: sheenSweep 7s ease-in-out infinite;
+  opacity: 0.55;
+}
+
 .input-shell {
   width: 100%;
   border-radius: 1.15rem;
@@ -196,7 +230,9 @@ select {
   display: flex;
   flex-direction: column;
   align-items: center;
-  animation: float 8s ease-in-out infinite;
+  animation:
+    float 8s ease-in-out infinite,
+    softGlow 6s ease-in-out infinite;
 }
 
 .hero-bottle-cap {
@@ -262,6 +298,35 @@ select {
   );
 }
 
+.floating-scent-card {
+  position: absolute;
+  width: min(16rem, 42vw);
+  border-radius: 1.6rem;
+  border: 1px solid rgba(223, 45, 128, 0.16);
+  background: rgba(255, 255, 255, 0.78);
+  padding: 1rem 1.1rem;
+  box-shadow: 0 18px 50px rgba(223, 45, 128, 0.12);
+  backdrop-filter: blur(12px);
+  animation: driftCard 7s ease-in-out infinite;
+}
+
+.floating-scent-card-left {
+  left: -0.5rem;
+  top: 12%;
+}
+
+.floating-scent-card-right {
+  right: -0.5rem;
+  bottom: 12%;
+  animation-delay: 1.2s;
+}
+
+@media (max-width: 1023px) {
+  .floating-scent-card {
+    display: none;
+  }
+}
+
 @keyframes drift {
   0%,
   100% {
@@ -273,6 +338,17 @@ select {
   }
 }
 
+@keyframes driftCard {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
 @keyframes float {
   0%,
   100% {
@@ -281,5 +357,40 @@ select {
 
   50% {
     transform: translate3d(0, -12px, 0) rotate(1deg);
+  }
+}
+
+@keyframes revealRise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes sheenSweep {
+  0%,
+  100% {
+    transform: translateX(-120%);
+  }
+
+  35%,
+  55% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes softGlow {
+  0%,
+  100% {
+    filter: drop-shadow(0 18px 50px rgba(223, 45, 128, 0.12));
+  }
+
+  50% {
+    filter: drop-shadow(0 28px 65px rgba(223, 45, 128, 0.18));
   }
 }
