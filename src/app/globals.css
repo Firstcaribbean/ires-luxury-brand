@@ -376,6 +376,78 @@ select {
   box-shadow: 0 0 0 6px rgba(255, 94, 169, 0.08);
 }
 
+.perfume-stage {
+  position: relative;
+  display: flex;
+  min-height: 38rem;
+  width: min(100%, 38rem);
+  align-items: center;
+  justify-content: center;
+}
+
+.perfume-stage-core {
+  z-index: 2;
+}
+
+.stage-product-card {
+  position: absolute;
+  z-index: 3;
+  width: min(14rem, 28vw);
+  overflow: hidden;
+  border-radius: 1.7rem;
+  border: 1px solid rgba(223, 45, 128, 0.16);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 24px 60px rgba(223, 45, 128, 0.16);
+  backdrop-filter: blur(14px);
+  animation: orbitCardBob 6.5s ease-in-out infinite;
+}
+
+.stage-product-card-1 {
+  left: -1rem;
+  top: 3rem;
+}
+
+.stage-product-card-2 {
+  right: -0.5rem;
+  top: 1rem;
+  animation-delay: 1.2s;
+}
+
+.stage-product-card-3 {
+  left: 1rem;
+  bottom: 2rem;
+  animation-delay: 2.2s;
+}
+
+.stage-product-card-4 {
+  right: -1.5rem;
+  bottom: 3rem;
+  animation-delay: 3s;
+}
+
+.stage-product-glow {
+  position: absolute;
+  inset: auto 10% 8% 10%;
+  height: 5rem;
+  border-radius: 9999px;
+  filter: blur(30px);
+  opacity: 0.95;
+}
+
+.stage-product-image {
+  position: relative;
+  z-index: 2;
+  height: 11rem;
+  width: 100%;
+  object-fit: cover;
+}
+
+.stage-product-meta {
+  position: relative;
+  z-index: 2;
+  padding: 1rem 1rem 1.1rem;
+}
+
 .marquee-shell {
   overflow: hidden;
   border-radius: 9999px;
@@ -402,6 +474,45 @@ select {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-accent-strong);
+}
+
+.product-image-marquee-shell {
+  overflow: hidden;
+  border-radius: 2rem;
+  border: 1px solid rgba(223, 45, 128, 0.14);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 1rem;
+  box-shadow: 0 18px 44px rgba(223, 45, 128, 0.08);
+}
+
+.product-image-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 1rem;
+  animation: productCardMarquee 28s linear infinite;
+}
+
+.product-image-marquee-card {
+  display: grid;
+  width: min(31rem, 70vw);
+  grid-template-columns: 11rem 1fr;
+  gap: 1rem;
+  border-radius: 1.6rem;
+  background: white;
+  padding: 0.9rem;
+  box-shadow: 0 20px 42px rgba(223, 45, 128, 0.08);
+}
+
+.product-image-marquee-photo {
+  height: 100%;
+  min-height: 11rem;
+  width: 100%;
+  border-radius: 1.15rem;
+  object-fit: cover;
+}
+
+.product-image-marquee-copy {
+  padding: 0.5rem 0.3rem 0.5rem 0;
 }
 
 .dashboard-glow-card::after {
@@ -459,12 +570,33 @@ select {
     margin-top: 1rem;
   }
 
+  .perfume-stage {
+    min-height: auto;
+    width: 100%;
+    padding-top: 0.5rem;
+  }
+
+  .stage-product-card {
+    position: static;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
   .hero-ripple {
     display: none;
   }
 
   .marquee-track {
     animation-duration: 18s;
+  }
+
+  .product-image-marquee-card {
+    width: min(24rem, 86vw);
+    grid-template-columns: 1fr;
+  }
+
+  .product-image-marquee-photo {
+    min-height: 13rem;
   }
 }
 
@@ -567,6 +699,16 @@ select {
 
   100% {
     transform: translateX(-50%);
+  }
+}
+
+@keyframes productCardMarquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(calc(-50% - 0.5rem));
   }
 }
 

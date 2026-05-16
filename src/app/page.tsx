@@ -1,11 +1,11 @@
 import Link from "next/link";
 
-import { adminStarterProducts } from "@/data/admin-starter-products";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { ProductsGrid } from "@/components/products/products-grid";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { demoSeedPerfumes } from "@/data/perfumes";
 import { siteConfig } from "@/data/site-config";
 
 const scrollScenes = [
@@ -45,7 +45,7 @@ const orderFlow = [
   "Track the order status later and confirm delivery with a note once it arrives.",
 ];
 
-const heroShowcase = adminStarterProducts.slice(0, 3);
+const heroShowcase = demoSeedPerfumes;
 const movingHighlights = [
   "Luxury perfume picks",
   "Cart before WhatsApp",
@@ -109,57 +109,57 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative flex items-center justify-center lg:justify-end">
+            <div className="relative flex items-start justify-center pt-6 lg:justify-end lg:pt-2">
               <div className="ambient-orb ambient-orb-left" />
               <div className="ambient-orb ambient-orb-right" />
               <div className="hero-ripple hero-ripple-one" />
               <div className="hero-ripple hero-ripple-two" />
-              <div className="hero-bottle-shell reveal-rise [animation-delay:180ms]">
-                <div className="hero-bottle-cap" />
-                <div className="hero-bottle-glass">
-                  <div className="hero-bottle-reflection" />
-                  <div className="hero-bottle-label">
-                    <span className="text-[0.62rem] uppercase tracking-[0.42em] text-[color:var(--color-muted-soft)]">
-                      IRE&apos;S LUXURY
-                    </span>
-                    <span className="mt-3 font-serif text-3xl text-[color:var(--color-ink)] sm:text-4xl">
-                      Pink Signature
-                    </span>
-                    <span className="mt-3 h-px w-10 bg-[color:var(--color-accent-soft)]" />
-                    <span className="mt-3 text-xs uppercase tracking-[0.32em] text-[color:var(--color-accent-strong)]">
-                      Eau de parfum
-                    </span>
+              <div className="perfume-stage reveal-rise [animation-delay:180ms]">
+                <div className="hero-bottle-shell perfume-stage-core">
+                  <div className="hero-bottle-cap" />
+                  <div className="hero-bottle-glass">
+                    <div className="hero-bottle-reflection" />
+                    <div className="hero-bottle-label">
+                      <span className="text-[0.62rem] uppercase tracking-[0.42em] text-[color:var(--color-muted-soft)]">
+                        IRE&apos;S LUXURY
+                      </span>
+                      <span className="mt-3 font-serif text-3xl text-[color:var(--color-ink)] sm:text-4xl">
+                        Pink Signature
+                      </span>
+                      <span className="mt-3 h-px w-10 bg-[color:var(--color-accent-soft)]" />
+                      <span className="mt-3 text-xs uppercase tracking-[0.32em] text-[color:var(--color-accent-strong)]">
+                        Eau de parfum
+                      </span>
+                    </div>
                   </div>
                 </div>
+                {heroShowcase.map((product, index) => (
+                  <article
+                    key={product.slug}
+                    className={`stage-product-card reveal-rise stage-product-card-${index + 1}`}
+                    style={{ animationDelay: `${260 + index * 100}ms` }}
+                  >
+                    <div
+                      className="stage-product-glow"
+                      style={{ background: product.heroAccent }}
+                    />
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="stage-product-image"
+                    />
+                    <div className="stage-product-meta">
+                      <p className="section-kicker">{product.fragranceFamily}</p>
+                      <p className="mt-2 font-serif text-lg text-[color:var(--color-ink)]">
+                        {product.name}
+                      </p>
+                      <p className="mt-1 text-xs uppercase tracking-[0.2em] text-[color:var(--color-muted-soft)]">
+                        {product.size}
+                      </p>
+                    </div>
+                  </article>
+                ))}
               </div>
-              {heroShowcase.map((product, index) => (
-                <div
-                  key={product.slug}
-                  className={`showcase-orbit-card reveal-rise ${
-                    index === 0
-                      ? "showcase-orbit-card-left"
-                      : index === 1
-                        ? "showcase-orbit-card-top"
-                        : "showcase-orbit-card-right"
-                  }`}
-                  style={{ animationDelay: `${260 + index * 90}ms` }}
-                >
-                  <span
-                    className="showcase-orbit-dot"
-                    style={{ background: product.heroAccent }}
-                  />
-                  <p className="section-kicker">{product.fragranceFamily}</p>
-                  <p className="mt-3 font-serif text-xl text-[color:var(--color-ink)]">
-                    {product.name}
-                  </p>
-                  <p className="mt-2 text-sm text-[color:var(--color-muted-soft)]">
-                    {product.size}
-                  </p>
-                  <p className="mt-3 font-serif text-2xl text-[color:var(--color-accent-strong)]">
-                    ₦{product.price.toLocaleString()}
-                  </p>
-                </div>
-              ))}
             </div>
           </div>
         </section>
@@ -172,6 +172,46 @@ export default function Home() {
                   <span key={`${item}-${index}`} className="marquee-pill">
                     {item}
                   </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-[color:var(--color-accent-soft)]/14 bg-[color:var(--color-panel)]/55">
+          <div className="mx-auto w-full max-w-7xl px-6 py-10 lg:px-10">
+            <div className="mb-6 reveal-rise">
+              <SectionHeading
+                eyebrow="Animated Showcase"
+                title="A moving perfume spotlight that feels more visual and modern."
+                body="This section keeps product imagery in motion so the page feels alive even after the first load."
+              />
+            </div>
+            <div className="product-image-marquee-shell reveal-rise [animation-delay:120ms]">
+              <div className="product-image-marquee-track">
+                {[...heroShowcase, ...heroShowcase].map((product, index) => (
+                  <article
+                    key={`${product.slug}-${index}`}
+                    className="product-image-marquee-card"
+                  >
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="product-image-marquee-photo"
+                    />
+                    <div className="product-image-marquee-copy">
+                      <p className="section-kicker">{product.fragranceFamily}</p>
+                      <p className="mt-2 font-serif text-2xl text-[color:var(--color-ink)]">
+                        {product.name}
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-[color:var(--color-muted)]">
+                        {product.tagline}
+                      </p>
+                      <p className="mt-4 font-serif text-2xl text-[color:var(--color-accent-strong)]">
+                        ₦{product.price.toLocaleString()}
+                      </p>
+                    </div>
+                  </article>
                 ))}
               </div>
             </div>
