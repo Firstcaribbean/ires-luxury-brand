@@ -21,6 +21,7 @@ import {
 import { getFirebaseServices } from "@/lib/firebase/client";
 
 const LOCAL_PRODUCTS_KEY = "ires-luxury-brand-products";
+const LOCAL_PRODUCTS_INITIALIZED_KEY = "ires-luxury-brand-products-initialized";
 const PRODUCTS_UPDATED_EVENT = "ires-luxury-brand-products-updated";
 const starterSeedProducts: Perfume[] = [
   ...demoSeedPerfumes,
@@ -71,46 +72,27 @@ function readLocalProducts() {
   }
 
   const stored = window.localStorage.getItem(LOCAL_PRODUCTS_KEY);
+  const isInitialized =
+    window.localStorage.getItem(LOCAL_PRODUCTS_INITIALIZED_KEY) === "true";
 
-  if (!stored) {
+  if (!stored && !isInitialized) {
     window.localStorage.setItem(
       LOCAL_PRODUCTS_KEY,
       JSON.stringify(starterSeedProducts),
     );
+    window.localStorage.setItem(LOCAL_PRODUCTS_INITIALIZED_KEY, "true");
     return starterSeedProducts;
+  }
+
+  if (!stored) {
+    return [];
   }
 
   try {
     const parsed = JSON.parse(stored) as Perfume[];
-    if (!parsed.length) {
-      window.localStorage.setItem(
-        LOCAL_PRODUCTS_KEY,
-        JSON.stringify(starterSeedProducts),
-      );
-      return starterSeedProducts;
-    }
-
-    const existingSlugs = new Set(parsed.map((product) => product.slug));
-    const missingSeedProducts = starterSeedProducts.filter(
-      (product) => !existingSlugs.has(product.slug),
-    );
-
-    if (!missingSeedProducts.length) {
-      return parsed;
-    }
-
-    const mergedProducts = [...parsed, ...missingSeedProducts];
-    window.localStorage.setItem(
-      LOCAL_PRODUCTS_KEY,
-      JSON.stringify(mergedProducts),
-    );
-    return mergedProducts;
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
-    window.localStorage.setItem(
-      LOCAL_PRODUCTS_KEY,
-      JSON.stringify(starterSeedProducts),
-    );
-    return starterSeedProducts;
+    return [];
   }
 }
 
@@ -138,9 +120,29 @@ async function ensureFirebaseProductsSeeded() {
     return;
   }
 
+  const seedStateRef = doc(firebase.db, "settings", "product-seed-state");
+  const seedStateSnapshot = await getDoc(seedStateRef);
+
+  if (seedStateSnapshot.exists()) {
+    return;
+  }
+
   const snapshot = await getDocs(query(collection(firebase.db, "products")));
 
   if (!snapshot.empty) {
+    try {
+      await setDoc(
+        seedStateRef,
+        {
+          initialized: true,
+          seededAt: new Date().toISOString(),
+          seedCount: snapshot.size,
+        },
+        { merge: true },
+      );
+    } catch {
+      // Ignore if the current visitor cannot write settings.
+    }
     return;
   }
 
@@ -148,6 +150,16 @@ async function ensureFirebaseProductsSeeded() {
     starterSeedProducts.map((product) =>
       setDoc(doc(firebase.db, "products", product.id), product),
     ),
+  );
+
+  await setDoc(
+    seedStateRef,
+    {
+      initialized: true,
+      seededAt: new Date().toISOString(),
+      seedCount: starterSeedProducts.length,
+    },
+    { merge: true },
   );
 }
 
@@ -172,26 +184,7 @@ export async function listProducts() {
     await ensureFirebaseProductsSeeded();
 
     const snapshot = await getDocs(query(collection(firebase.db, "products")));
-    const existingSlugs = new Set(
-      snapshot.docs.map((entry) => String(entry.data().slug ?? "")),
-    );
-    const missingSeedProducts = starterSeedProducts.filter(
-      (product) => !existingSlugs.has(product.slug),
-    );
-
-    if (missingSeedProducts.length) {
-      await Promise.all(
-        missingSeedProducts.map((product) =>
-          setDoc(doc(firebase.db, "products", product.id), product),
-        ),
-      );
-    }
-
-    const refreshedSnapshot = missingSeedProducts.length
-      ? await getDocs(query(collection(firebase.db, "products")))
-      : snapshot;
-
-    return refreshedSnapshot.docs
+    return snapshot.docs
       .map((entry) => parseProduct(entry.data(), entry.id))
       .sort((left, right) => left.name.localeCompare(right.name));
   }
