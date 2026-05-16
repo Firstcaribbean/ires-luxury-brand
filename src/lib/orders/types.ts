@@ -4,6 +4,7 @@ export const orderStatuses = [
   "With Delivery Company",
   "Out for Delivery",
   "Delivered",
+  "Voided",
 ] as const;
 
 export type OrderStatus = (typeof orderStatuses)[number];
@@ -54,6 +55,14 @@ export type BookingInput = {
 export type DeliveryConfirmationInput = {
   trackingId: string;
   note: string;
+};
+
+export type AdminOrderUpdateInput = {
+  customerName: string;
+  phone: string;
+  address: string;
+  items: OrderItem[];
+  status: OrderStatus;
 };
 
 export type AdminSession = {

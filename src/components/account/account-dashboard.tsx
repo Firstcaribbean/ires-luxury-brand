@@ -142,6 +142,11 @@ export function AccountDashboard() {
                 <p className="mt-2 text-[color:var(--color-muted)]">
                   {order.status} / Qty {order.quantity}
                 </p>
+                {order.status === "Voided" ? (
+                  <p className="mt-2 text-sm text-red-600">
+                    This booking was voided by the vendor and will not be fulfilled.
+                  </p>
+                ) : null}
                 <p className="mt-2 font-medium text-[color:var(--color-accent-strong)]">
                   {formatNaira(order.totalAmount)}
                 </p>

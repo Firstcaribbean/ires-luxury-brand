@@ -3,6 +3,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -27,6 +28,7 @@ import {
   upsertStatusHistory,
 } from "@/lib/orders/shared";
 import type {
+  AdminOrderUpdateInput,
   AdminSession,
   BookingInput,
   DeliveryConfirmationInput,
@@ -77,6 +79,42 @@ function writeLocalOrders(orders: OrderRecord[]) {
   }
 
   window.localStorage.setItem(LOCAL_ORDERS_KEY, JSON.stringify(orders));
+}
+
+function buildOrderSnapshot(current: OrderRecord, input: AdminOrderUpdateInput) {
+  const items = input.items.filter((item) => item.quantity > 0);
+
+  if (!items.length) {
+    throw new Error("An order must contain at least one item.");
+  }
+
+  const updatedAt = new Date().toISOString();
+  const totalAmount = items.reduce(
+    (sum, item) => sum + item.unitPrice * item.quantity,
+    0,
+  );
+  const quantity = items.reduce((sum, item) => sum + item.quantity, 0);
+  const statusHistory = upsertStatusHistory(
+    current.statusHistory,
+    input.status,
+    updatedAt,
+  );
+
+  return {
+    customerName: input.customerName.trim(),
+    phone: input.phone.trim(),
+    normalizedPhone: normalizePhone(input.phone),
+    address: input.address.trim(),
+    productName: summarizeItems(items),
+    quantity,
+    totalAmount,
+    items,
+    status: input.status,
+    statusHistory,
+    updatedAt,
+    orderReceivedConfirmed:
+      input.status === "Voided" ? false : current.orderReceivedConfirmed,
+  } satisfies Partial<OrderRecord>;
 }
 
 export async function createOrder(input: BookingInput) {
@@ -246,6 +284,51 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
 
   writeLocalOrders(nextOrders);
   return nextOrders.find((order) => order.id === orderId) ?? null;
+}
+
+export async function updateOrderBooking(
+  orderId: string,
+  input: AdminOrderUpdateInput,
+) {
+  const firebase = getFirebaseServices();
+
+  if (firebase) {
+    const current = await getOrderById(orderId);
+
+    if (!current) {
+      throw new Error("Order could not be found.");
+    }
+
+    const nextRecord = buildOrderSnapshot(current, input);
+    await updateDoc(doc(firebase.db, "orders", orderId), nextRecord);
+    return getOrderById(orderId);
+  }
+
+  const orders = readLocalOrders();
+  const current = orders.find((order) => order.id === orderId);
+
+  if (!current) {
+    throw new Error("Order could not be found.");
+  }
+
+  const nextRecord = buildOrderSnapshot(current, input);
+  const nextOrders = orders.map((order) =>
+    order.id === orderId ? { ...order, ...nextRecord } : order,
+  );
+  writeLocalOrders(nextOrders);
+  return nextOrders.find((order) => order.id === orderId) ?? null;
+}
+
+export async function deleteOrder(orderId: string) {
+  const firebase = getFirebaseServices();
+
+  if (firebase) {
+    await deleteDoc(doc(firebase.db, "orders", orderId));
+    return;
+  }
+
+  const nextOrders = readLocalOrders().filter((order) => order.id !== orderId);
+  writeLocalOrders(nextOrders);
 }
 
 export async function confirmDelivery({

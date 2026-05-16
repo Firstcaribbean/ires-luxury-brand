@@ -102,43 +102,58 @@ export function TrackingSearch() {
               </div>
             </div>
 
-            <div className="space-y-4">
-              {orderStatuses.map((status, index) => {
-                const activeIndex = orderStatuses.indexOf(result.status);
-                const complete = index <= activeIndex;
+            {result.status === "Voided" ? (
+              <div className="rounded-[1.35rem] border border-red-200 bg-red-50 p-4">
+                <p className="text-xs uppercase tracking-[0.28em] text-red-500">
+                  Booking Voided
+                </p>
+                <p className="mt-2 leading-7 text-red-700">
+                  This booking was voided by the vendor. It usually means the
+                  customer did not complete payment or requested a change before
+                  dispatch.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {orderStatuses
+                  .filter((status) => status !== "Voided")
+                  .map((status, index) => {
+                    const activeIndex = orderStatuses.indexOf(result.status);
+                    const complete = index <= activeIndex;
 
-                return (
-                  <div key={status} className="flex items-start gap-4">
-                    <div className="flex flex-col items-center">
-                      <span
-                        className={`mt-1 h-3.5 w-3.5 rounded-full border ${
-                          complete
-                            ? "border-[color:var(--color-accent-strong)] bg-[color:var(--color-accent-soft)]"
-                            : "border-[color:var(--color-accent-soft)]/25 bg-transparent"
-                        }`}
-                      />
-                      {index < orderStatuses.length - 1 ? (
-                        <span className="timeline-line" />
-                      ) : null}
-                    </div>
-                    <div>
-                      <p className="text-base text-[color:var(--color-ink)]">{status}</p>
-                      <p className="mt-1 text-sm text-[color:var(--color-muted-soft)]">
-                        {complete
-                          ? `Updated ${new Date(
-                              result.statusHistory[index]?.updatedAt ??
-                                result.updatedAt,
-                            ).toLocaleString("en-US", {
-                              dateStyle: "medium",
-                              timeStyle: "short",
-                            })}`
-                          : "Pending next update"}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                    return (
+                      <div key={status} className="flex items-start gap-4">
+                        <div className="flex flex-col items-center">
+                          <span
+                            className={`mt-1 h-3.5 w-3.5 rounded-full border ${
+                              complete
+                                ? "border-[color:var(--color-accent-strong)] bg-[color:var(--color-accent-soft)]"
+                                : "border-[color:var(--color-accent-soft)]/25 bg-transparent"
+                            }`}
+                          />
+                          {index < orderStatuses.length - 2 ? (
+                            <span className="timeline-line" />
+                          ) : null}
+                        </div>
+                        <div>
+                          <p className="text-base text-[color:var(--color-ink)]">{status}</p>
+                          <p className="mt-1 text-sm text-[color:var(--color-muted-soft)]">
+                            {complete
+                              ? `Updated ${new Date(
+                                  result.statusHistory[index]?.updatedAt ??
+                                    result.updatedAt,
+                                ).toLocaleString("en-US", {
+                                  dateStyle: "medium",
+                                  timeStyle: "short",
+                                })}`
+                              : "Pending next update"}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
 
             {result.deliveryNote ? (
               <div className="rounded-[1.35rem] border border-[color:var(--color-accent-soft)]/18 bg-white p-4">
